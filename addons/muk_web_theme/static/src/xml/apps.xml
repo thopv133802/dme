@@ -110,7 +110,7 @@
     
                         <t t-if = "widget.employeeGroupApps.length > 0">
                             <div class = "d-flex flex-column align-items-center" style = "margin-top: 4px; margin-bottom: 4px">
-                                <div class = "border border-white d-flex flex-wrap btn-group-employee focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
+                                <div class = "border border-white d-flex flex-wrap btn-group-employee container_focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
                                     <t t-foreach="widget.employeeGroupApps" t-as="app">
                                         <t t-if = "app_index &lt; 4">
                                             <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 31px; height: 31px" t-attf-title = "#{app.name}"/>
@@ -124,7 +124,7 @@
                         </t>
                         <t t-if = "widget.taskManagerGroupApps.length > 0">
                            <div class = "d-flex flex-column align-items-center" style = "margin-top: 4px; margin-bottom: 4px">
-                                <div class = "border border-white d-flex flex-wrap btn-group-task-manager focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
+                                <div class = "border border-white d-flex flex-wrap btn-group-task-manager container_focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
                                     <t t-foreach="widget.taskManagerGroupApps" t-as="app">
                                         <t t-if = "app_index &lt; 4">
                                             <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 31px; height: 31px" t-attf-title = "#{app.name}"/>
@@ -156,7 +156,7 @@
                             </t>
                             <t t-else = "">
                                 <div class = "d-flex flex-column align-items-center" style = "margin-top: 4px; margin-bottom: 4px">
-                                    <div class = "border border-white d-flex flex-wrap btn-group-document-manager focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
+                                    <div class = "border border-white d-flex flex-wrap btn-group-document-manager container_focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
                                         <t t-foreach="widget.documentManagerGroupApps" t-as="app">
                                             <t t-if = "app_index &lt; 4">
                                                 <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 31px; height: 31px" t-attf-title = "#{app.name}"/>
@@ -170,8 +170,8 @@
                             </t>
                         </t>
                         <t t-if = "widget.customerRelationshipGroupApps.length > 0">
-                            <div class = "d-flex flex-column align-items-center focusable_a" style = "margin-top: 4px; margin-bottom: 4px">
-                                <div class = "border border-white d-flex flex-wrap btn-group-customer-relationship" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
+                            <div class = "d-flex flex-column align-items-center" style = "margin-top: 4px; margin-bottom: 4px">
+                                <div class = "border border-white d-flex flex-wrap btn-group-customer-relationship container_focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
                                     <t t-foreach="widget.customerRelationshipGroupApps" t-as="app">
                                         <t t-if = "app_index &lt; 4">
                                             <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 31px; height: 31px" t-attf-title = "#{app.name}"/>
@@ -184,8 +184,8 @@
                             </div>
                         </t>
                         <t t-if = "widget.marketingGroupApps.length > 0">
-                            <div class = "d-flex flex-column align-items-center focusable_a" style = "margin-top: 4px; margin-bottom: 4px">
-                                <div class = "border border-white d-flex flex-wrap btn-group-marketing" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
+                            <div class = "d-flex flex-column align-items-center" style = "margin-top: 4px; margin-bottom: 4px">
+                                <div class = "border border-white d-flex flex-wrap btn-group-marketing container_focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
                                     <t t-foreach="widget.marketingGroupApps" t-as="app">
                                         <t t-if = "app_index &lt; 4">
                                             <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 31px; height: 31px" t-attf-title = "#{app.name}"/>
@@ -198,8 +198,8 @@
                             </div>
                         </t>
                         <t t-if = "widget.productGroupApps.length > 0">
-                            <div class = "d-flex flex-column align-items-center focusable_a" style = "margin-top: 4px; margin-bottom: 4px">
-                                <div class = "border border-white d-flex flex-wrap btn-group-product" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
+                            <div class = "d-flex flex-column align-items-center" style = "margin-top: 4px; margin-bottom: 4px">
+                                <div class = "border border-white d-flex flex-wrap btn-group-product container_focusable_a" style = "border-radius: 1px !important; border-width:1px !important; width: 64px; height: 64px; padding: 0px">
                                     <t t-foreach="widget.productGroupApps" t-as="app">
                                         <t t-if = "app_index &lt; 4">
                                             <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 31px; height: 31px" t-attf-title = "#{app.name}"/>

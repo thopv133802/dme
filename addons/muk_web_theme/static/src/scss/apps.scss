@@ -27,6 +27,14 @@
 			box-shadow: 0 8px 15px -10px black;
 			transform: translateY(-1px);
 		}
+
+	}
+}
+.container_focusable_a {
+	&:hover, &:focus, &:active, &.active {
+		background: none;
+		box-shadow: 0 8px 15px -10px black;
+			transform: translateY(-1px);
 	}
 }
 
