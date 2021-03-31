@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="dmedocument_action_document_request_wizard" model="ir.actions.act_window">
+        <field name="name">Document Request</field>
+        <field name="res_model">dmedocument.document.request.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="dmedocument_view_form_document_request_wizard" model="ir.ui.view">
+        <field name="name">dmedocument.document.request.wizard.view.form</field>
+        <field name="model">dmedocument.document.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Document Request Form">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only">
+                        </label>
+                        <h1>
+                            <field name="name" autocomplete = "off"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="requested_user_id"/>
+                        </group>
+                        <group>
+
+                            <field name="due_time" autocomplete = "off"/>
+                        </group>
+                    </group>
+                     <group col = "3">
+                        <group colspan = "1">
+                            <field name="workspace_id" options='{"no_create": true, "no_open": true}'/>
+                        </group>
+                        <group colspan = "2">
+                            <field name="tag_ids" widget="many2many_tags"
+                                   context='{"expand": True, "order_by": "category_sequence,sequence"}'
+                                   options='{"color_field": "color", "no_create": "true"}'/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Note">
+                            <field name="note" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button string="Request" type="object" name="request" class="btn btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!---->
+    <record id="dmedocument_action_document_upload_wizard" model="ir.actions.act_window">
+        <field name="name">Document Upload</field>
+        <field name="res_model">dmedocument.document.upload.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="dmedocument_view_form_document_upload_wizard" model="ir.ui.view">
+        <field name="name">dmedocument.document.upload.wizard.view.form</field>
+        <field name="model">dmedocument.document.upload.wizard</field>
+        <field name="arch" type="xml">
+            <form name="Document Upload" duplicate="false">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" autocomplete = "off"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="content" filename="file_name"
+                               accepted_file_extensions='"pdf","png","jpg","jpeg","xls","xlsx","zip"'
+                               options='{"accepted_file_extensions": ["pdf", "png", "jpg", "jpeg", "xls", "xlsx", "zip"]}'/>
+                        <field name="file_name" invisible="True"/>
+                    </group>
+
+                    <group col = "3">
+                        <group colspan = "1">
+                            <field name="workspace_id" options='{"no_create": true, "no_open": true}'/>
+                        </group>
+                        <group colspan = "2">
+                            <field name="tag_ids" widget="many2many_tags"
+                                   context='{"expand": True, "order_by": "category_sequence,sequence"}'
+                                   options='{"color_field": "color", "no_create": "true"}'/>
+                        </group>
+                    </group>
+
+                </sheet>
+                <footer>
+                    <button type="object" name="upload" string="Upload" class="btn btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!---->
+    <!---->
+    <record id="dmedocument_action_document_add_link_wizard" model="ir.actions.act_window">
+        <field name="name">Document Add Link</field>
+        <field name="res_model">dmedocument.document.add.link.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="dmedocument_view_form_document_add_link_wizard" model="ir.ui.view">
+        <field name="name">dmedocument.document.add.link.wizard.view.form</field>
+        <field name="model">dmedocument.document.add.link.wizard</field>
+        <field name="arch" type="xml">
+            <form name="Document Add Link" duplicate="false">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" autocomplete = "off"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="link" autocomplete = "off"/>
+                    </group>
+                    <group col = "3">
+                        <group colspan = "1">
+                            <field name="workspace_id" options='{"no_create": true, "no_open": true}'/>
+                        </group>
+                        <group colspan = "2">
+                            <field name="tag_ids" widget="many2many_tags"
+                                   context='{"expand": True, "order_by": "category_sequence,sequence"}'
+                                   options='{"color_field": "color", "no_create": "true"}'/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button type="object" name="add_link" string="Add Link" class="btn btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!---->
+    <record id="dmedocument_action_document_edit_wizard" model="ir.actions.act_window">
+        <field name="name">Document Edit</field>
+        <field name="res_model">dmedocument.document.edit.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="dmedocument_view_form_document_edit_wizard" model="ir.ui.view">
+        <field name="name">dmedocument.document.edit.wizard.view.form</field>
+        <field name="model">dmedocument.document.edit.wizard</field>
+        <field name="arch" type="xml">
+            <form name="Document Edit" duplicate="false">
+                <sheet>
+                    <field name="document_type" invisible="True"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" autocomplete = "off"/>
+                        </h1>
+                    </div>
+                    <group attrs='{"invisible": [("document_type", "!=", "file")]}'>
+                        <field name="content" filename="file_name"
+                               attrs='{"invisible": [("document_type", "!=", "file")], "required": [("document_type", "=", "file")]}'/>
+                        <field name="file_name" invisible="True"/>
+                    </group>
+                    <group attrs='{"invisible": [("document_type", "!=", "link")]}'>
+                        <field name="link" autocomplete = "off"
+                               attrs='{"invisible": [("document_type", "!=", "link")], "required": [("document_type", "=", "link")]}'/>
+                    </group>
+
+                    <group col = "3">
+                        <group colspan = "1">
+                            <field name="workspace_id" options='{"no_create": true, "no_open": true}'/>
+                        </group>
+                        <group colspan = "2">
+                            <field name="tag_ids" widget="many2many_tags"
+                                   context='{"expand": True, "order_by": "category_sequence,sequence"}'
+                                   options='{"color_field": "color", "no_create": "true"}'/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button type="object" name="edit" string="Edit" class="btn btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!---->
+    <record id="dmedocument_action_document_share_wizard" model="ir.actions.act_window">
+        <field name="name">Share</field>
+        <field name="res_model">dmedocument.document.share.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="model_dmedocument_document"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="dmedocument_view_form_document_share_wizard" model="ir.ui.view">
+        <field name="name">dmedocument.document.share.wizard.view.form</field>
+        <field name="model">dmedocument.document.share.wizard</field>
+        <field name="arch" type="xml">
+            <form name="Document Share" duplicate="false">
+                <sheet>
+                    <field name="document_share_id" invisible="True"/>
+
+                    <group string="Documents">
+                        <field name="document_ids"/>
+                    </group>
+
+                    <group>
+                        <group>
+                            <field name="is_public"/>
+                        </group>
+                        <group attrs='{"invisible": [("is_public", "=", True)]}'>
+                            <field name="shared_user_ids" widget="many2many_tags"
+                                   attrs='{"invisible": [("is_public", "=", True)]}'/>
+                            <field name="shared_group_ids" widget="many2many_tags"
+                                   attrs='{"invisible": [("is_public", "=", True)]}'/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="expired_date" autocomplete = "off"/>
+                    </group>
+                    <group>
+                        <field name="link" widget="ClipboardUrlWidget"/>
+                    </group>
+
+                </sheet>
+                <footer>
+                    <button special="cancel" string="Done" class="btn btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

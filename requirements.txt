@@ -1,0 +1,3 @@
+humanize
+python-magic
+pyjwt

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model = "dmedocument.workspace" id = "dmedocument_workspace_internal">
+        <field name = "name">Internal</field>
+    </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_internal_status">
+            <field name = "name">Status</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_internal"/>
+            <field name = "sequence" eval = "1"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_status_inbox">
+                <field name = "name">Inbox</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_status"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_status_to_validate">
+                <field name = "name">To Validate</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_status"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_status_validated">
+                <field name = "name">Validated</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_status"/>
+                <field name = "sequence" eval = "3"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_status_deprecated">
+                <field name = "name">Deprecated</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_status"/>
+                <field name = "sequence" eval = "4"/>
+            </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_internal_knowledge">
+            <field name = "name">Knowledge</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_internal"/>
+            <field name = "sequence" eval = "2"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_knowledge_hr">
+                <field name = "name">HR</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_knowledge"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_knowledge_legal">
+                <field name = "name">Legal</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_knowledge"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_knowledge_sales">
+                <field name = "name">Sales</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_knowledge"/>
+                <field name = "sequence" eval = "3"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_knowledge_other">
+                <field name = "name">Other</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_knowledge"/>
+                <field name = "sequence" eval = "4"/>
+            </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_internal_templates">
+            <field name = "name">Templates</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_internal"/>
+            <field name = "sequence" eval = "3"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_templates_contracts">
+                <field name = "name">Contracts</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_templates"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_templates_presentations">
+                <field name = "name">Presentations</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_templates"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_templates_project">
+                <field name = "name">Project</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_templates"/>
+                <field name = "sequence" eval = "3"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_internal_templates_text">
+                <field name = "name">Text</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_internal_templates"/>
+                <field name = "sequence" eval = "4"/>
+            </record>
+
+
+    <record model = "dmedocument.workspace" id = "dmedocument_workspace_finance">
+        <field name = "name">Finance</field>
+    </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_finance_status">
+            <field name = "name">Status</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_finance"/>
+            <field name = "sequence" eval = "1"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_status_inbox">
+                <field name = "name">Inbox</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_status"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_status_to_validate">
+                <field name = "name">To Validate</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_status"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_status_validated">
+                <field name = "name">Validated</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_status"/>
+                <field name = "sequence" eval = "3"/>
+            </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_finance_documents">
+            <field name = "name">Documents</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_finance"/>
+            <field name = "sequence" eval = "2"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_documents_bill">
+                <field name = "name">Bill</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_documents"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_documents_expense">
+                <field name = "name">Expense</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_documents"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_documents_vat">
+                <field name = "name">VAT</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_documents"/>
+                <field name = "sequence" eval = "3"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_documents_fiscal">
+                <field name = "name">Fiscal</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_documents"/>
+                <field name = "sequence" eval = "4"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_documents_financial">
+                <field name = "name">Financial</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_documents"/>
+                <field name = "sequence" eval = "5"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_documents_contracts">
+                <field name = "name">Contracts</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_documents"/>
+                <field name = "sequence" eval = "6"/>
+            </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_finance_fiscal_years">
+            <field name = "name">Fiscal years</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_finance"/>
+            <field name = "sequence" eval = "3"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_fiscal_years_2020">
+                <field name = "name">2020</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_fiscal_years"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_finance_fiscal_years_2021">
+                <field name = "name">2021</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_finance_fiscal_years"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+
+    <record model = "dmedocument.workspace" id = "dmedocument_workspace_hr">
+        <field name = "name">HR</field>
+    </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_hr_documents">
+            <field name = "name">Documents</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_hr"/>
+            <field name = "sequence" eval = "1"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_hr_documents_absences">
+                <field name = "name">Absences</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_hr_documents"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_hr_documents_employees_documents">
+                <field name = "name">Employees Documents</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_hr_documents"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_hr_documents_certifications">
+                <field name = "name">Certifications</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_hr_documents"/>
+                <field name = "sequence" eval = "3"/>
+            </record>
+
+    <record model = "dmedocument.workspace" id = "dmedocument_workspace_marketing">
+        <field name = "name">Marketing</field>
+    </record>
+        <record model = "dmedocument.tag.category" id = "dmedocument_tag_category_marketing_assets">
+            <field name = "name">Assets</field>
+            <field name = "workspace_id" ref = "dmedocument_workspace_marketing"/>
+            <field name = "sequence" eval = "1"/>
+        </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_marketing_assets_ads">
+                <field name = "name">Ads</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_marketing_assets"/>
+                <field name = "sequence" eval = "1"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_marketing_assets_brochures">
+                <field name = "name">Brochures</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_marketing_assets"/>
+                <field name = "sequence" eval = "2"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_marketing_assets_images">
+                <field name = "name">Images</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_marketing_assets"/>
+                <field name = "sequence" eval = "3"/>
+            </record>
+            <record model = "dmedocument.tag" id = "dmedocument_tag_marketing_assets_videos">
+                <field name = "name">Videos</field>
+                <field name = "category_id" ref = "dmedocument_tag_category_marketing_assets"/>
+                <field name = "sequence" eval = "4"/>
+            </record>
+</odoo>

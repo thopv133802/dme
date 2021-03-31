@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="dmedocument.document_share_template">
+        <t t-call="website.layout">
+            <div class="d-flex flex-wrap ml16 mr 16">
+                <div class = "mt32 mb32 ml16 mr16" t-foreach = "documents" t-as = "document"  style = "max-width: 256px">
+                    <div t-attf-class="card">
+                        <div class = "card-header">
+                            <mark class = "card-title text-muted">
+                                Shared by <t t-esc = "document_share_sharer"/>
+                            </mark>
+                        </div>
+                        <img class = "card-img-top mt32 mb16" t-attf-src = "/dmedocument/static/src/img/file_icons/#{document['document_icon']}.svg" width = "128" height = "128" alt = "Document_Image" />
+                        <div class="card-body text-truncate mr16" id="card_body" >
+                            <h5 class = "card-title" t-esc = "document['document_name']" data-toggle = "tooltip" t-att-title = "document['document_name']"/>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class = "list-group-item card-subtitle">
+                                Owner: <mark t-esc = "document['document_owner']" class = "text-truncate mr16" data-toggle = "tooltip" t-att-title = "document['document_owner']"/>
+                            </li>
+                            <li class = "list-group-item card-text">
+                                Created: <mark t-esc = "document['document_create_date']"  class = "text-truncate mr16" data-toggle = "tooltip" t-att-title = "document['document_create_date']"/>
+                            </li>
+                            <li class = "list-group-item card-text">
+                                Size: <mark t-esc = "document['document_size']"  class = "text-truncate mr16" data-toggle = "tooltip" t-att-title = "document['document_size']"/>
+                            </li>
+                        </ul>
+                        <div class = "card-body">
+                            <t t-if = "document['document_type'] == 'file'">
+                                <a t-attf-href="/web/content/dmedocument.document/#{document['document_id']}/content?download=true" class = "card-link">
+                                    <i class="fa fa-download">
+                                    </i>
+                                    Download
+                                </a>
+                            </t>
+                            <t t-if = "document['document_type'] == 'spreadsheet'">
+                                <a t-attf-href="#" class = "card-link" t-attf-onclick = "export_xlsx('#{document['document_spreadsheet_content']}', '#{document['document_name'] + '.xlsx'}')">
+                                    <i class="fa fa-download">
+                                    </i>
+                                    Download
+                                </a>
+                                <script>
+                                    function xtos(sdata) {
+                                      let out = XLSX.utils.book_new();
+                                      sdata.forEach(function(xws) {
+                                        let aoa = [[]];
+                                        let rowobj = xws.rows;
+                                        for(let ri = 0; ri &lt; rowobj.len; ++ri) {
+                                          let row = rowobj[ri];
+                                          if(!row) continue;
+                                          aoa[ri] = [];
+                                          Object.keys(row.cells).forEach(function(k) {
+                                            let idx = +k;
+                                            if(isNaN(idx)) return;
+                                            aoa[ri][idx] = row.cells[k].text;
+                                          });
+                                        }
+                                        let ws = XLSX.utils.aoa_to_sheet(aoa);
+                                        XLSX.utils.book_append_sheet(out, ws, xws.name);
+                                      });
+                                      return out;
+                                    }
+                                    function export_xlsx(data_instring, name) {
+                                        console.log("Start export_xlsx")
+                                        const workbook = xtos(JSON.parse(data_instring))
+                                        XLSX.writeFile(workbook, name + ".xlsx")
+                                    }
+                                </script>
+                            </t>
+                            <t t-if = "document['document_type'] == 'link'">
+                                <a  t-att-href = "document['document_link']" class = "card-link">
+                                    <i class = "fa fa-link">
+                                    </i>
+                                    Browse
+                                </a>
+                            </t>
+                            <t t-if = 'document["document_type"] == "upload"'>
+                                <a href = "#" class = "card-link">
+                                    <i class = "fa fa-upload">
+                                    </i>
+                                    Requested by <t t-esc = "document['document_requester']">
+                                    </t>
+                                </a>
+                            </t>
+                        </div>
+                        <div class = "card-footer">
+                            <small class = "text-muted" >
+                                Valid until <t t-esc = "document_share_expired_date"/>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

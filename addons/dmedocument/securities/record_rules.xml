@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.rule" id="dmedocument_document_rule_user_have_no_access_rights_by_default">
+        <field name="name">User have no access rights by default on documents</field>
+        <field name="model_id" ref="model_dmedocument_document"/>
+        <field name="groups" eval='[(4, ref("dmedocument.dmedocument_group_user"))]'/>
+        <field name="domain_force">
+            [(0, "=", 1)]
+        </field>
+    </record>
+    <record model="ir.rule" id="dmedocument_document_rule_admin_manage_all_document">
+        <field name="name">Admin manage all document</field>
+        <field name="model_id" ref="model_dmedocument_document"/>
+        <field name="groups" eval="[(4, ref('dmedocument.dmedocument_group_admin'))]"/>
+        <field name="domain_force">
+            [(1, "=", 1)]
+        </field>
+    </record>
+    <!---->
+    <record model="ir.rule" id="dmedocument_workspace_rule_user_have_no_access_rights_by_default">
+        <field name="name">User have no access rights by default on workspaces</field>
+        <field name="model_id" ref="model_dmedocument_workspace"/>
+        <field name="groups" eval='[(4, ref("dmedocument.dmedocument_group_user"))]'/>
+        <field name="domain_force">
+            [(0, "=", 1)]
+        </field>
+    </record>
+    <record model="ir.rule" id="dmedocument_workspace_rule_admin_manage_all_workspace">
+        <field name="name">Admin manage all workspace</field>
+        <field name="model_id" ref="model_dmedocument_workspace"/>
+        <field name="groups" eval="[(4, ref('dmedocument.dmedocument_group_admin'))]"/>
+        <field name="domain_force">
+            [(1, "=", 1)]
+        </field>
+    </record>
+    <!---->
+</odoo>

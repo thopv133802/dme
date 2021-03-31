@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id = "dmedocument_assets_common" name = "DME Document Assets Common" inherit_id="web.assets_common">
+        <xpath expr = "." position = "inside">
+            <script src = "/dmedocument/static/src/js/spreadsheet/shim.js" type = "text/javascript"/>
+            <script src = "/dmedocument/static/src/js/spreadsheet/xlsx.full.min.js" type = "text/javascript"/>
+            <script src="/dmedocument/static/src/js/clipboard/clipboard.min.js" type = "text/javascript"/>
+        </xpath>
+    </template>
+    <template id = "dmedocument_assets_backend" name = "DME Document Assets Backend" inherit_id = "web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/dmedocument/static/src/css/spreadsheet/xspreadsheet.css" type = "text/css"/>
+            <link href = "/dmedocument/static/src/scss/dmedocument.scss" rel = "stylesheet" type = "text/scss"/>
+            <script src="/dmedocument/static/src/js/spreadsheet/xspreadsheet.js" type = "text/javascript"/>
+            <script src="/dmedocument/static/src/js/dmedocument.js" type="text/javascript"/>
+        </xpath>
+    </template>
+</odoo>

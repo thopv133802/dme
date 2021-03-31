@@ -1,0 +1,27 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+document_admin_ar,Document Admin access right,model_dmedocument_document,dmedocument_group_admin,1,1,1,1
+document_user_ar,Document User access right,model_dmedocument_document,dmedocument_group_user,1,1,1,1
+workspace_admin_ar,Workspace Admin access right,model_dmedocument_workspace,dmedocument_group_admin,1,1,1,1
+workspace_user_ar,Workspace User access right,model_dmedocument_workspace,dmedocument_group_user,1,0,0,0
+tag_category_admin_ar,Tag Category Admin access right,model_dmedocument_tag_category,dmedocument_group_admin,1,1,1,1
+tag_category_user_ar,Tag Category User access right,model_dmedocument_tag_category,dmedocument_group_user,1,0,0,0
+tag_admin_ar,Tag Admin access right,model_dmedocument_tag,dmedocument_group_admin,1,1,1,1
+tag_user_ar,Tag User access right,model_dmedocument_tag,dmedocument_group_user,1,0,0,0
+
+document_request_wizard_admin_ar,Document Request Wizard Admin access right,model_dmedocument_document_request_wizard,dmedocument_group_admin,1,1,1,1
+document_request_wizard_user_ar,Document Request Wizard User access right,model_dmedocument_document_request_wizard,dmedocument_group_user,1,1,1,1
+
+document_upload_wizard_admin_ar,Document Upload Wizard Admin access right,model_dmedocument_document_upload_wizard,dmedocument_group_admin,1,1,1,1
+document_upload_wizard_user_ar,Document Upload Wizard User access right,model_dmedocument_document_upload_wizard,dmedocument_group_user,1,1,1,1
+
+document_edit_wizard_admin_ar,Document Edit Wizard Admin access right,model_dmedocument_document_edit_wizard,dmedocument_group_admin,1,1,1,1
+document_edit_wizard_user_ar,Document Edit Wizard User access right,model_dmedocument_document_edit_wizard,dmedocument_group_user,1,1,1,1
+
+document_add_link_wizard_admin_ar,Document Add Link Wizard Admin access right,model_dmedocument_document_add_link_wizard,dmedocument_group_admin,1,1,1,1
+document_add_link_wizard_user_ar,Document Add Link Wizard User access right,model_dmedocument_document_add_link_wizard,dmedocument_group_user,1,1,1,1
+
+document_share_wizard_admin_ar,Document Share Wizard Admin access right,model_dmedocument_document_share_wizard,dmedocument_group_admin,1,1,1,1
+document_share_wizard_user_ar,Document Share Wizard User access right,model_dmedocument_document_share_wizard,dmedocument_group_user,1,1,1,1
+
+document_share_admin_ar,Document Share Admin access right,model_dmedocument_document_share,dmedocument_group_admin,1,1,1,1
+document_share_user_ar,Document Share User access right,model_dmedocument_document_share,dmedocument_group_user,1,1,1,1

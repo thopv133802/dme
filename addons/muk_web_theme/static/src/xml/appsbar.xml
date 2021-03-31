@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Copyright (c) 2017-today MuK IT GmbH.
+
+    This file is part of MuK Grid Snippets
+    (see https://mukit.at).
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+  -->
+
+<templates id="template" xml:space="preserve">
+	<t t-name="muk_web_theme.AppsBarMenu">
+		<t t-set = "apps" t-value = "widget.getApps()"/>
+		<t t-js = "ctx">
+			ctx.dcsApps = ctx.apps.filter((app) => ["base.menu_management", "base.menu_administration"].includes(app.xmlID));
+			ctx.mesApps = ctx.apps.filter((app) => ["mrp.menu_mrp_root", "maintenance.menu_maintenance_title"].includes(app.xmlID));
+
+			let employeeGroupAppXmlIds = ["hr.menu_hr_root", "hr_recruitment.menu_hr_recruitment_root", "hr_holidays.menu_hr_holidays_root", "hr_expense.menu_hr_expense_root", "website_slides.website_slides_menu_root"]
+			let taskManagerGroupAppXmlIds = ["project.menu_main_pm", "mail.menu_root_discuss"];
+			let documentManagerGroupApps = ["dmedocument.dmedocument_menu_root"];
+			let customerRelationshipGroupAppXmlIds = ["contacts.menu_contacts", "crm.crm_menu_root"]
+			let marketingGroupAppXmlIds = ["mass_mailing.mass_mailing_menu_root", "website.menu_website_configuration"]
+			let productGroupAppXmlIds = ["sale.sale_menu_root", "purchase.menu_purchase_root", "stock.menu_stock_root"]
+
+			let erpAppXmlIds = [...employeeGroupAppXmlIds, ...documentManagerGroupApps, ...taskManagerGroupAppXmlIds, ...customerRelationshipGroupAppXmlIds, ...marketingGroupAppXmlIds, ...productGroupAppXmlIds]
+
+			ctx.erpApps = ctx.apps.filter((app) => erpAppXmlIds.includes(app.xmlID));
+
+			ctx.employeeGroupApps = ctx.erpApps.filter((app) => employeeGroupAppXmlIds.includes(app.xmlID));
+			ctx.documentManagerGroupApps = ctx.erpApps.filter((app) => documentManagerGroupApps.includes(app.xmlID));
+			ctx.taskManagerGroupApps = ctx.erpApps.filter((app) => taskManagerGroupAppXmlIds.includes(app.xmlID));
+			ctx.customerRelationshipGroupApps = ctx.erpApps.filter((app) => customerRelationshipGroupAppXmlIds.includes(app.xmlID));
+			ctx.marketingGroupApps = ctx.erpApps.filter((app) => marketingGroupAppXmlIds.includes(app.xmlID));
+			ctx.productGroupApps = ctx.erpApps.filter((app) => productGroupAppXmlIds.includes(app.xmlID));
+
+			ctx.softwareGroupApps = ctx.apps.filter((app) => ["base.menu_management", "base.menu_administration"].includes(app.xmlID))
+		</t>
+        <div class="mk_apps_sidebar">
+	        <ul class="mk_apps_sidebar_menu" style = "overflow-y: hidden">
+				<t t-if = "mesApps.length > 0">
+					<li>
+						<a href = "#software_manager" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">MES</a>
+						<ul class = "mk_apps_sidebar_menu collapse show" id = "software_manager">
+							<t t-foreach="mesApps" t-as="app">
+								<li class = "nav-item">
+									<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+											t-att-data-menu-id="app.menuID"
+											t-att-data-menu-xmlid="app.xmlID"
+											t-att-data-action-id="app.actionID"
+											class="nav-link" role="menuitem"
+									>
+										<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "margin-left: 4px"/>
+										<span class="mk_apps_sidebar_name">
+											<t t-esc="app.name"/>
+										</span>
+									 </a>
+								</li>
+							</t>
+						</ul>
+					</li>
+				</t>
+				<t t-if = "employeeGroupApps.length > 0">
+					<li>
+						<a href = "#employee_group" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">Human resources</a>
+						<ul class = "mk_apps_sidebar_menu collapse show" id = "employee_group">
+							<t t-foreach="employeeGroupApps" t-as="app">
+								<li class = "nav-item">
+									<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+											t-att-data-menu-id="app.menuID"
+											t-att-data-menu-xmlid="app.xmlID"
+											t-att-data-action-id="app.actionID"
+											class="nav-link" role="menuitem"
+									>
+										<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "margin-left: 4px"/>
+										<span class="mk_apps_sidebar_name">
+											<t t-esc="app.name"/>
+										</span>
+									 </a>
+								</li>
+							</t>
+						</ul>
+					</li>
+				</t>
+				<t t-if = "taskManagerGroupApps.length > 0">
+					<li>
+						<a href = "#task_manager_group" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">Task manager</a>
+						<ul class = "mk_apps_sidebar_menu collapse show" id = "task_manager_group">
+							<t t-foreach="taskManagerGroupApps" t-as="app">
+								<li class = "nav-item">
+									<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+											t-att-data-menu-id="app.menuID"
+											t-att-data-menu-xmlid="app.xmlID"
+											t-att-data-action-id="app.actionID"
+											class="nav-link" role="menuitem"
+									>
+										<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}"  style = "margin-left: 4px"/>
+										<span class="mk_apps_sidebar_name">
+											<t t-esc="app.name"/>
+										</span>
+									 </a>
+								</li>
+							</t>
+						</ul>
+					</li>
+				</t>
+				<t t-if = "documentManagerGroupApps.length > 0">
+					<li>
+						<a href = "#document_manager_group" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">Document manager</a>
+						<ul class = "mk_apps_sidebar_menu collapse show" id = "document_manager_group">
+							<t t-foreach="documentManagerGroupApps" t-as="app">
+								<li class = "nav-item">
+									<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+											t-att-data-menu-id="app.menuID"
+											t-att-data-menu-xmlid="app.xmlID"
+											t-att-data-action-id="app.actionID"
+											class="nav-link" role="menuitem"
+									>
+										<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "margin-left: 4px"/>
+										<span class="mk_apps_sidebar_name">
+											<t t-esc="app.name"/>
+										</span>
+									 </a>
+								</li>
+							</t>
+						</ul>
+					</li>
+				</t>
+				<t t-if = "customerRelationshipGroupApps.length > 0">
+					<li>
+						<a href = "#customer_relationship_group" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">Customer relation</a>
+						<ul class = "mk_apps_sidebar_menu collapse show" id = "customer_relationship_group">
+							<t t-foreach="customerRelationshipGroupApps" t-as="app">
+								<li class = "nav-item">
+									<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+											t-att-data-menu-id="app.menuID"
+											t-att-data-menu-xmlid="app.xmlID"
+											t-att-data-action-id="app.actionID"
+											class="nav-link" role="menuitem"
+									>
+										<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "margin-left: 4px"/>
+										<span class="mk_apps_sidebar_name">
+											<t t-esc="app.name"/>
+										</span>
+									 </a>
+								</li>
+							</t>
+						</ul>
+					</li>
+				</t>
+				<t t-if = "marketingGroupApps.length > 0">
+					<li>
+						<a href = "#marketing_group" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">Marketing</a>
+						<ul class = "mk_apps_sidebar_menu collapse show" id = "marketing_group">
+							<t t-foreach="marketingGroupApps" t-as="app">
+								<li class = "nav-item">
+									<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+											t-att-data-menu-id="app.menuID"
+											t-att-data-menu-xmlid="app.xmlID"
+											t-att-data-action-id="app.actionID"
+											class="nav-link" role="menuitem"
+									>
+										<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "margin-left: 4px"/>
+										<span class="mk_apps_sidebar_name">
+											<t t-esc="app.name"/>
+										</span>
+									 </a>
+								</li>
+							</t>
+						</ul>
+					</li>
+				</t>
+				<t t-if = "productGroupApps.length > 0">
+					<li>
+						<a href = "#software_manager" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">Product</a>
+						<ul class = "mk_apps_sidebar_menu collapse show" id = "software_manager">
+							<t t-foreach="productGroupApps" t-as="app">
+								<li class = "nav-item">
+									<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+											t-att-data-menu-id="app.menuID"
+											t-att-data-menu-xmlid="app.xmlID"
+											t-att-data-action-id="app.actionID"
+											class="nav-link" role="menuitem"
+									>
+										<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "margin-left: 4px"/>
+										<span class="mk_apps_sidebar_name">
+											<t t-esc="app.name"/>
+										</span>
+									 </a>
+								</li>
+							</t>
+						</ul>
+					</li>
+				</t>
+				<li t-if = "softwareGroupApps.length > 0">
+					<a href = "#software_manager" data-toggle = "collapse" aria-expanded = "true" class = "dropdown-toggle" style = "position: relative;">Software manager</a>
+					<ul class = "mk_apps_sidebar_menu collapse show" id = "software_manager">
+						<t t-foreach="softwareGroupApps" t-as="app">
+							<li class = "nav-item">
+								<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+										t-att-data-menu-id="app.menuID"
+										t-att-data-menu-xmlid="app.xmlID"
+										t-att-data-action-id="app.actionID"
+										class="nav-link" role="menuitem"
+								>
+									<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "margin-left: 4px"/>
+									<span class="mk_apps_sidebar_name">
+										<t t-esc="app.name"/>
+									</span>
+								 </a>
+							</li>
+						</t>
+					</ul>
+				</li>
+				<t t-if = "false">
+					<t t-foreach="widget.getApps()" t-as="app">
+						<li class="nav-item">
+							<a t-attf-href="#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}"
+									t-att-data-menu-id="app.menuID"
+									t-att-data-menu-xmlid="app.xmlID"
+									t-att-data-action-id="app.actionID"
+									class="nav-link" role="menuitem">
+								<img class="mk_apps_sidebar_icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}"/>
+								<span class="mk_apps_sidebar_name">
+									<t t-esc="app.xmlID"/>
+								</span>
+							 </a>
+						</li>
+					</t>
+				</t>
+	        </ul>
+	    </div>
+    </t>
+
+</templates>

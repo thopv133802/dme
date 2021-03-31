@@ -1,0 +1,28 @@
+.o_dropdown_kanban > .dropdown-menu {
+  min-width: 8rem;
+}
+
+.dme-document-fill, .dme-document-link{
+  cursor: pointer;
+  padding: 4px;
+
+  &:not(.o-details-overlay):hover {
+    opacity: 0.8;
+  }
+}
+
+.fa-clock-o {
+  padding-top: 2px;
+  padding-bottom: 2px;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+.o_act_window {
+  overflow-x: hidden
+}
+
+.x-spreadsheet {
+  width: 100%
+}

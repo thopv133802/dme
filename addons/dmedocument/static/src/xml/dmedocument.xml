@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+
+    <t t-name = "dmedocument.FieldOwlGlobeUrlTemplate" owl = "1">
+        <div class = "d-flex flex-nowrap align-items-center">
+            <i class = "fa fa-globe">
+            </i>
+            <a t-att-href = "value" target = "_blank" class = "text-truncate ml4" style = "text-size: 10px">
+                <t t-esc = "value"/>
+            </a>
+        </div>
+    </t>
+
+    <t t-extend = "KanbanView.buttons">
+        <t t-jquery = "button" t-operation = "replace">
+            <t t-if = "widget.modelName == 'dmedocument.document'">
+                <button type="button" class="btn btn-primary dme-document-upload" accesskey="u">
+                    Upload
+                </button>
+            </t>
+            <t t-else = "">
+                <button type="button"  t-if="!noCreate" class="btn btn-primary o-kanban-button-new" accesskey="c">
+                    Create
+                </button>
+            </t>
+        </t>
+        <t t-jquery = ".dme-document-upload" t-operation = "after">
+            <t t-if = "widget.modelName == 'dmedocument.document'">
+                <button class = "btn btn-secondary dme-document-create-spreadsheet" type = "button">
+                    Create SpreadSheet
+                </button>
+                <button class = "btn btn-secondary dme-document-request" type = "button">
+                    Request
+                </button>
+                <button class = "btn btn-secondary dme-document-add-link" type = "button">
+                    Add Link
+                </button>
+                <button class = "btn btn-secondary dme-document-share" type = "button">
+                    Share
+                </button>
+            </t>
+        </t>
+
+    </t>
+
+    <t t-extend = "ListView.buttons">
+        <t t-jquery = ".o_list_button_add" t-operation = "replace">
+            <t t-if = "widget.modelName == 'dmedocument.document'">
+                <button type="button" class="btn btn-primary dme-document-upload" accesskey="u">
+                    Upload
+                </button>
+            </t>
+            <t t-else = "">
+                <button type="button" class="btn btn-primary o_list_button_add" accesskey="c" data-original-title="" title="">
+                    Create
+                </button>
+            </t>
+        </t>
+        <t t-jquery = ".dme-document-upload" t-operation = "after">
+            <t t-if = "widget.modelName == 'dmedocument.document'">
+                <button class = "btn btn-secondary dme-document-create-spreadsheet" type = "button">
+                    Create SpreadSheet
+                </button>
+                <button class = "btn btn-secondary dme-document-request" type = "button">
+                    Request
+                </button>
+                <button class = "btn btn-secondary dme-document-add-link" type = "button">
+                    Add Link
+                </button>
+            </t>
+        </t>
+
+    </t>
+    <t t-name = "dmedocument.dmedocument_template_document_spreadsheet_viewer">
+        <div class="o_Dialog o_DialogManager_dialog">
+            <div tabindex="0" class="o_AttachmentViewer o_Dialog_component">
+                <div class="o_AttachmentViewer_header">
+                    <div class="o_AttachmentViewer_headerItem o_AttachmentViewer_icon">
+                        <i role="img" title="PDF file"
+                           class="fa fa-file-text">
+                        </i>
+                    </div>
+                    <div class="o_AttachmentViewer_headerItem o_AttachmentViewer_name">
+                        <t t-esc = "document_name"/>
+                    </div>
+                    <div role="button" title="Download"
+                         class="o_AttachmentViewer_buttonDownload o_AttachmentViewer_headerItem o_AttachmentViewer_headerItemButton">
+                        <i role="img" class="fa fa-download fa-fw">
+                        </i>
+                    </div>
+                    <div class="o-autogrow">
+                    </div>
+                    <div role="button" title="Close (Esc)" aria-label="Close"
+                         class="o_AttachmentViewer_headerItem o_AttachmentViewer_headerItemButton o_AttachmentViewer_headerItemButtonClose">
+                        <i role="img" class="fa fa-fw fa-times">
+                        </i>
+                    </div>
+                </div>
+                <div class="o_AttachmentViewer_main" style = "top: 46px !important; bottom: 46px !important;">
+                    <span class = "dme-document-spreadsheet-viewer">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name ="dmedocument.dmedocument_template_document_viewer">
+        <div class="o_Dialog o_DialogManager_dialog">
+            <div tabindex="0" class="o_AttachmentViewer o_Dialog_component">
+                <div class="o_AttachmentViewer_header">
+                    <div class="o_AttachmentViewer_headerItem o_AttachmentViewer_icon">
+                        <i role="img" title="PDF file"
+                           class="fa fa-file-text">
+                        </i>
+                    </div>
+                    <div class="o_AttachmentViewer_headerItem o_AttachmentViewer_name">
+                        <t t-esc = "document_name"/>
+                    </div>
+                    <div role="button" title="Download"
+                         class="o_AttachmentViewer_buttonDownload o_AttachmentViewer_headerItem o_AttachmentViewer_headerItemButton">
+                        <i role="img" class="fa fa-download fa-fw">
+                        </i>
+                    </div>
+                    <div class="o-autogrow">
+                    </div>
+                    <div role="button" title="Close (Esc)" aria-label="Close"
+                         class="o_AttachmentViewer_headerItem o_AttachmentViewer_headerItemButton o_AttachmentViewer_headerItemButtonClose">
+                        <i role="img" class="fa fa-fw fa-times">
+                        </i>
+                    </div>
+                </div>
+                <div class="o_AttachmentViewer_main">
+                    <iframe t-attf-src="#{iframe_url}"
+                            class="o_AttachmentViewer_view o_AttachmentViewer_viewIframe o_AttachmentViewer_viewPdf">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name = "dmedocument.dmedocument_template_document_upload">
+        <div t-attf-class="d-none dme-container-document-upload o_hidden_input_file #{fileupload_class or ''}" t-att-style="fileupload_style" aria-atomic="true">
+            <form class="dme-form-document-upload o_form_binary_form" t-att-target="fileupload_id" method="post" enctype="multipart/form-data" t-att-action="fileupload_action">
+                <input type="hidden" name = "document_id" t-att-value = "document_id"/>
+                <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                <input type="file" class="o_input_file dme-input-document-upload" name="ufile" t-att-accept="accepted_file_extensions"/>
+                <t t-raw="0"/>
+            </form>
+            <iframe t-att-id="fileupload_id" t-att-name="fileupload_id" style="display: none"/>
+        </div>
+    </t>
+
+</templates>

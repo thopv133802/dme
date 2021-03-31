@@ -1,0 +1,32 @@
+version: "3"
+services:
+  web-service:
+    image: odoo:14
+    depends_on:
+      - db-service
+    ports:
+      - "8069:8069"
+    restart: always
+    tty: true
+    command: ["/bin/sh", "-c", "pip3 install python-magic pyjwt humanize && odoo --dev=all"]
+    environment:
+      - HOST=db-service
+      - USER=dtq212
+      - PASSWORD=dtq21295
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+  db-service:
+    image: postgres:12
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=dtq212
+      - POSTGRES_PASSWORD=dtq21295
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+volumes:
+  odoo-web-data:
+  odoo-db-data:

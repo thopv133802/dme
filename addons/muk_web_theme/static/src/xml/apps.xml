@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Copyright (c) 2017-today MuK IT GmbH.
+
+    This file is part of MuK Grid Snippets
+    (see https://mukit.at).
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+  -->
+
+<templates id="template" xml:space="preserve">
+	<t t-extend="AppsMenu">
+		<t t-jquery=".o_app" t-operation="attributes">
+            <attribute name="t-attf-href">#menu_id=#{app.menuID}&amp;action_id=#{app.actionID}</attribute>
+        </t>
+        <t t-jquery=".full" t-operation="attributes">
+            <attribute name="accesskey">h</attribute>
+        </t>
+        <t t-jquery=".full &gt; i" t-operation="attributes">
+            <attribute name="class">fa fa-th</attribute>
+        </t>
+        <t t-jquery="[t-as=app]" t-operation="before">
+            <p class = "display-3 text-center text-white col-12 mt-4">
+                DME COMPREHENSIVE ENTERPRISE MANAGEMENT AUTOMATION SYSTEM
+                <!--HỆ THỐNG TỰ ĐỘNG HÓA QTDN TOÀN DIỆN DME-->
+            </p>
+            <div class="mk_search_container form-row align-items-center mb-4 col-12">
+                <div class="mk_search_input col-md-10 ml-auto mr-auto mb-2">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <i class="fa fa-search"/>
+                            </div>
+                        </div>
+                        <input type="text" placeholder="Search menus..." class="form-control"/>
+                    </div>
+                </div>
+                <div class="mk_search_results col-md-10 ml-auto mr-auto"/>
+            </div>
+        </t>
+        <t t-jquery="[t-as=app]" t-operation = "replace">
+            <t t-set = "apps" t-value = "widget.getApps()"/>
+
+            <t t-js = "ctx">
+                ctx.dcsApps = ctx.apps.filter((app) => ["base.menu_management", "base.menu_administration"].includes(app.xmlID));
+                ctx.mesApps = ctx.apps.filter((app) => ["mrp.menu_mrp_root", "maintenance.menu_maintenance_title"].includes(app.xmlID));
+
+                let employeeGroupAppXmlIds = ["hr.menu_hr_root", "hr_recruitment.menu_hr_recruitment_root", "hr_holidays.menu_hr_holidays_root", "hr_expense.menu_hr_expense_root", "website_slides.website_slides_menu_root"]
+                let documentManagerGroupApps = ["dmedocument.dmedocument_menu_root"];
+                let taskManagerGroupAppXmlIds = ["project.menu_main_pm", "mail.menu_root_discuss"];
+                let customerRelationshipGroupAppXmlIds = ["contacts.menu_contacts", "crm.crm_menu_root"]
+                let marketingGroupAppXmlIds = ["mass_mailing.mass_mailing_menu_root", "website.menu_website_configuration"]
+                let productGroupAppXmlIds = ["sale.sale_menu_root", "purchase.menu_purchase_root", "stock.menu_stock_root"]
+
+                let erpAppXmlIds = [...employeeGroupAppXmlIds, ...documentManagerGroupApps, ...taskManagerGroupAppXmlIds, ...customerRelationshipGroupAppXmlIds, ...marketingGroupAppXmlIds, ...productGroupAppXmlIds]
+
+                ctx.erpApps = ctx.apps.filter((app) => erpAppXmlIds.includes(app.xmlID));
+
+                ctx.employeeGroupApps = ctx.erpApps.filter((app) => employeeGroupAppXmlIds.includes(app.xmlID));
+                ctx.documentManagerGroupApps = ctx.erpApps.filter((app) => documentManagerGroupApps.includes(app.xmlID));
+                ctx.taskManagerGroupApps = ctx.erpApps.filter((app) => taskManagerGroupAppXmlIds.includes(app.xmlID));
+                ctx.customerRelationshipGroupApps = ctx.erpApps.filter((app) => customerRelationshipGroupAppXmlIds.includes(app.xmlID));
+                ctx.marketingGroupApps = ctx.erpApps.filter((app) => marketingGroupAppXmlIds.includes(app.xmlID));
+                ctx.productGroupApps = ctx.erpApps.filter((app) => productGroupAppXmlIds.includes(app.xmlID));
+            </t>
+
+            <div class = "main-container container d-flex justify-content-center align-items-start mb-4">
+                <t t-if = "dcsApps.length > 0">
+                    <fieldset class = "container border-bottom border-top border-right border-left border-white col d-flex flex-wrap justify-content-center align-items-start mx-lg-3 mx-md-2 mx-1 py-3"  style = "border-radius: 4px !important; border-width:4px !important; ">
+                    <legend class = "w-auto mx-auto d-flex px-2">
+                        <img class = "p-0 m-0" src = "/muk_web_theme/static/src/img/d.svg" style = "width: 64px; height: 64px; "/>
+                        <img class = "p-0 m-0 d-none d-lg-block d-xl-block" src = "/muk_web_theme/static/src/img/c.svg" style = "width: 64px; height: 64px; "/>
+                        <img class = "p-0 m-0 d-none d-lg-block d-xl-block" src = "/muk_web_theme/static/src/img/s.svg" style = "width: 64px; height: 64px; "/>
+                    </legend>
+                    <t t-foreach="dcsApps" t-as="app">
+                        <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                            class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center"
+                            style = "width: 80px;"
+                            t-att-data-menu-id="app.menuID"
+                            t-att-data-menu-xmlid="app.xmlID"
+                            t-att-data-action-id="app.actionID"
+                        >
+                            <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 64px;"/>
+                            <span class="o-app-name text-center font-weight-bold" style = "width: 80px; overflow: hidden;">
+                                <t t-esc="app.name"/>
+                            </span>
+                        </a>
+                    </t>
+                </fieldset>
+                </t>
+                <t t-if = "mesApps.length > 0">
+                    <fieldset class = "container border-bottom border-top border-right border-left border-white col d-flex flex-wrap justify-content-center mx-lg-3 mx-md-2 mx-1 py-3"  style = 'border-radius: 4px !important; border-width:4px !important; '>
+                    <legend class = "w-auto mx-auto d-flex px-2">
+                        <img src = "/muk_web_theme/static/src/img/m.svg" style = "width: 64px; height: 64px; "/>
+                        <img class = "p-0 m-0 d-none d-lg-block d-xl-block" src = "/muk_web_theme/static/src/img/e.svg" style = "width: 64px; height: 64px; "/>
+                        <img class = "p-0 m-0 d-none d-lg-block d-xl-block" src = "/muk_web_theme/static/src/img/s.svg" style = "width: 64px; height: 64px; "/>
+                    </legend>
+                    <t t-foreach="mesApps" t-as="app">
+                        <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                            class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center justify-content-start"
+                            style = "width: 80px;"
+                            t-att-data-menu-id="app.menuID"
+                            t-att-data-menu-xmlid="app.xmlID"
+                            t-att-data-action-id="app.actionID"
+                        >
+                            <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 64px;"/>
+                            <span class="o-app-name text-center font-weight-bold" style = "width: 80px; overflow: hidden;">
+                                <t t-esc="app.name"/>
+                            </span>
+                        </a>
+                    </t>
+                </fieldset>
+                </t>
+                <t t-if = "erpApps.length > 0">
+                    <fieldset class = "container border-bottom border-top border-right border-left border-white col d-flex flex-wrap justify-content-center mx-lg-3 mx-md-2 mx-1 py-3"  style = "border-radius: 4px !important; border-width:4px !important; ">
+                        <legend class = "w-auto mx-auto d-flex px-2">
+                            <img src = "/muk_web_theme/static/src/img/e.svg" style = "width: 64px; height: 64px; "/>
+                            <img class = "p-0 m-0 d-none d-lg-block d-xl-block" src = "/muk_web_theme/static/src/img/r.svg" style = "width: 64px; height: 64px; "/>
+                            <img class = "p-0 m-0 d-none d-lg-block d-xl-block" src = "/muk_web_theme/static/src/img/p.svg" style = "width: 64px; height: 64px; "/>
+                        </legend>
+    
+                        <t t-if = "employeeGroupApps.length > 0">
+                            <fieldset class = "container border border-white d-flex flex-wrap justify-content-center pb-4 m-3" style = "border-radius: 2px !important; border-width:2px !important; ">
+                                <legend class = "w-auto mx-auto">
+                                    <span class = "o-app-name text-center font-weight-bold px-2">
+                                        Human resources
+                                    </span>
+                                </legend>
+                                <t t-foreach="employeeGroupApps" t-as="app">
+                                    <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                                        class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center  mt-2"
+                                        style = "width: 64px;"
+                                        t-att-data-menu-id="app.menuID"
+                                        t-att-data-menu-xmlid="app.xmlID"
+                                        t-att-data-action-id="app.actionID"
+                                    >
+                                        <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 48px;" t-attf-title = "#{app.name}"/>
+                                    </a>
+                                </t>
+                            </fieldset>
+                        </t>
+                        <t t-if = "taskManagerGroupApps.length > 0">
+                            <fieldset class = "container border border-white d-flex flex-wrap justify-content-center pb-4 m-3" style = "border-radius: 2px !important; border-width:2px !important; ">
+                                <legend class = "w-auto mx-auto">
+                                    <span class = "o-app-name text-center font-weight-bold px-2">
+                                        Task manager
+                                    </span>
+                                </legend>
+                                <t t-foreach="taskManagerGroupApps" t-as="app">
+                                    <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                                        class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center  mt-2"
+                                        style = "width: 64px;"
+                                        t-att-data-menu-id="app.menuID"
+                                        t-att-data-menu-xmlid="app.xmlID"
+                                        t-att-data-action-id="app.actionID"
+                                    >
+                                        <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 48px;" t-attf-title = "#{app.name}"/>
+                                    </a>
+                                </t>
+                            </fieldset>
+                        </t>
+
+                        <t t-if = "documentManagerGroupApps.length > 0">
+                            <fieldset class = "container border border-white d-flex flex-wrap justify-content-center pb-4 m-3" style = "border-radius: 2px !important; border-width:2px !important; ">
+                                <legend class = "w-auto mx-auto">
+                                    <span class = "o-app-name text-center font-weight-bold px-2">
+                                        Document manager
+                                    </span>
+                                </legend>
+                                <t t-foreach="documentManagerGroupApps" t-as="app">
+                                    <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                                        class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center  mt-2"
+                                        style = "width: 64px;"
+                                        t-att-data-menu-id="app.menuID"
+                                        t-att-data-menu-xmlid="app.xmlID"
+                                        t-att-data-action-id="app.actionID"
+                                    >
+                                        <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 48px;" t-attf-title = "#{app.name}"/>
+                                    </a>
+                                </t>
+                            </fieldset>
+                        </t>
+                        <t t-if = "customerRelationshipGroupApps.length > 0">
+                            <fieldset class = "container border border-white d-flex flex-wrap justify-content-center pb-4 m-3" style = "border-radius: 2px !important; border-width:2px !important; ">
+                                <legend class = "w-auto mx-auto">
+                                    <span class = "o-app-name text-center font-weight-bold px-2">
+                                        Customer relation
+                                    </span>
+                                </legend>
+                                <t t-foreach="customerRelationshipGroupApps" t-as="app">
+                                    <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                                            class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center  mt-2"
+                                            style = "width: 64px;"
+                                            t-att-data-menu-id="app.menuID"
+                                            t-att-data-menu-xmlid="app.xmlID"
+                                            t-att-data-action-id="app.actionID"
+                                        >
+                                            <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 48px;" t-attf-title = "#{app.name}"/>
+                                        </a>
+                                </t>
+                            </fieldset>
+                        </t>
+                        <t t-if = "marketingGroupApps.length > 0">
+                            <fieldset class = "container border border-white d-flex flex-wrap justify-content-center pb-4 m-3" style = "border-radius: 2px !important; border-width:2px !important; ">
+                                <legend class = "w-auto mx-auto">
+                                    <span class = "o-app-name text-center font-weight-bold px-2">
+                                        Marketing
+                                    </span>
+                                </legend>
+                                <t t-foreach="marketingGroupApps" t-as="app">
+                                    <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                                            class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center  mt-2"
+                                            style = "width: 64px;"
+                                            t-att-data-menu-id="app.menuID"
+                                            t-att-data-menu-xmlid="app.xmlID"
+                                            t-att-data-action-id="app.actionID"
+                                        >
+                                            <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 48px;" t-attf-title = "#{app.name}"/>
+                                    </a>
+                                </t>
+                            </fieldset>
+                        </t>
+                        <t t-if = "productGroupApps.length > 0">
+                            <fieldset class = "container border border-white d-flex flex-wrap justify-content-center pb-4 m-3" style = "border-radius: 2px !important; border-width:2px !important; ">
+                                <legend class = "w-auto mx-auto">
+                                    <span class = "o-app-name text-center font-weight-bold px-2">
+                                        Product
+                                    </span>
+                                </legend>
+                                <t t-foreach="productGroupApps" t-as="app">
+                                    <a role="menuitem" t-attf-href="#menu_id=#{app.menuID}"
+                                        class="dropdown-item focusable_a o_app_dcs d-flex flex-column align-items-center mt-2"
+                                        style = "width: 64px;"
+                                        t-att-data-menu-id="app.menuID"
+                                        t-att-data-menu-xmlid="app.xmlID"
+                                        t-att-data-action-id="app.actionID"
+                                    >
+                                        <img class="o-app-icon" t-attf-src="data:image/png;base64,#{app.web_icon_data}" style = "width: 48px;" t-attf-title = "#{app.name}"/>
+                                    </a>
+                                </t>
+                            </fieldset>
+                        </t>
+                    </fieldset>
+                </t>
+            </div>
+        </t>
+    </t>
+
+    <t t-name="muk_web_theme.AppIcon">
+        <img
+            class="o-app-icon"
+            t-attf-src="data:image/png;base64,#{app.web_icon_data}"
+        />
+        <span class="o-app-name">
+            <t t-esc="app.name"/>
+        </span>
+    </t>
+
+    <t t-name="muk_web_theme.MenuSearchResults">
+        <t t-foreach="results" t-as="result">
+            <t t-set="menu" t-value="widget._menuInfo(result.original)"/>
+            <a t-attf-class="mk_menu_search_result dropdown-item col-12 ml-auto mr-auto #{result_first ? 'active' : ''}"
+               t-attf-style="background-image: #{menu.web_icon_data ? 'url(data:image/png;base64,' + menu.web_icon_data + ')' : 'none'}"
+               t-attf-href="#menu_id=#{menu.id}&amp;action_id=#{menu.action_id}"
+               t-att-data-menu-id="menu.id"
+               t-att-data-action-id="menu.action_id"
+               t-att-data-parent-id="menu.parent_id[0]"
+               t-raw="result.string"/>
+        </t>
+    </t>
+
+</templates>
