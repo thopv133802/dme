@@ -432,6 +432,7 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
                         action["context"] = JSON.parse(action["context"])
                         action["context"]["default_workspace_name"] = workspace
                         action["context"]["default_document_type"] = "spreadsheet"
+                        action["target"] = "current"
                         return self.do_action(action)
                     }
                 })
