@@ -299,10 +299,3 @@ class DocumentShare(models.Model):
     def _compute_current_date(self):
         for record in self:
             record.current_date = fields.Date.today()
-
-    def write(self, vals):
-        if "link" not in vals or not vals["link"]:
-            document = super(DocumentShare, self).write(vals)
-            document.link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + "/dmedocument/document?link=" + jwt.encode({"id": document.id}, "dme_dtq212_doanvananh0512_hangvu912", algorithm = "HS256")
-            return document
-        return super(DocumentShare, self).write(vals)
