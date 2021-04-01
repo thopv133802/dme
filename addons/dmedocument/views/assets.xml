@@ -11,7 +11,8 @@
         <xpath expr="." position="inside">
             <link rel="stylesheet" href="/dmedocument/static/src/css/spreadsheet/xspreadsheet.css" type = "text/css"/>
             <link href = "/dmedocument/static/src/scss/dmedocument.scss" rel = "stylesheet" type = "text/scss"/>
-            <script src="/dmedocument/static/src/js/spreadsheet/xspreadsheet.js" type = "text/javascript"/>
+            <link rel="stylesheet" href="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.css"/>
+            <script src="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.js"/>
             <script src="/dmedocument/static/src/js/dmedocument.js" type="text/javascript"/>
         </xpath>
     </template>
