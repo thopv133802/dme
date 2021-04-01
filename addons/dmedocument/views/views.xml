@@ -4,7 +4,55 @@
         <field name="name">dmedocument.document.view.form</field>
         <field name="model">dmedocument.document</field>
         <field name="arch" type="xml">
-            <form name="Document Form" duplicate="false" js_class="DMEDocumentFormView">
+            <form name="Document Form" duplicate="false">
+                <sheet>
+                    <field name="document_type" invisible="True"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" autocomplete="off"/>
+                        </h1>
+                    </div>
+
+                    <group attrs='{"invisible": [("!"), ("document_type", "=", "file")]}'>
+                        <field name="content" filename="file_name"
+                               attrs='{"invisible": [("document_type", "!=", "file")]}'/>
+                        <field name="file_name" invisible="True"/>
+                    </group>
+                    <group attrs='{"invisible": [("!"), ("document_type", "=", "link")]}'>
+                        <field name="link" attrs='{"invisible": [("!"), ("document_type", "=", "link")]}'
+                               autocomplete="off"/>
+                    </group>
+                    <group col="3">
+                        <group colspan="1">
+                            <field name="workspace_id" options='{"no_create": true, "no_open": true}'/>
+                        </group>
+                        <group colspan="2">
+                            <field name="tag_ids" widget="many2many_tags"
+                                   context='{"expand": True, "order_by": "category_sequence,sequence"}'
+                                   options='{"color_field": "color", "no_create": "true"}'/>
+                        </group>
+                    </group>
+                    <div class="oe_title" attrs='{"invisible": [("!"), ("document_type", "=", "spreadsheet")]}'>
+                        <label for = "spreadsheet_content" class = "oe_edit_only" attrs = '{"invisible": [("!"), ("document_type", "=", "spreadsheet")]}'/>
+                        <field nolabel="1" name="spreadsheet_content" widget="FieldSpreadsheet"
+                               attrs='{"invisible": [("!"), ("document_type", "=", "spreadsheet")]}'/>
+                    </div>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="dmedocument_view_form_document_spreadsheet" model="ir.ui.view">
+        <field name="name">dmedocument.document.view.form</field>
+        <field name="model">dmedocument.document</field>
+        <field name="arch" type="xml">
+            <form name="Document Form" duplicate="false" js_class="DMEDocumentSpreadsheetFormView">
                 <sheet>
                     <field name="document_type" invisible="True"/>
                     <div class="oe_title">
@@ -91,7 +139,7 @@
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card o_kanban_record_has_image_fill">
                             <t t-set="is_document_viewable"
-                               t-value="new RegExp('(gif|jpeg|jpg|png|pdf|spreadsheet)').test(record.icon.raw_value)"/>
+                               t-value="new RegExp('(gif|jpeg|jpg|png|pdf|spreadsheet|doc)').test(record.icon.raw_value)"/>
                             <a t-attf-class="#{record.document_type.raw_value === 'upload' ? 'dme-document-fill' : ''} #{record.document_type.raw_value === 'link' ? 'dme-document-link' : ''}  #{is_document_viewable ? 'o_Attachment_image o-attachment-viewable dme-document-viewer' : ''}">
                                 <img alt="No Image"
                                      t-attf-src="/dmedocument/static/src/img/file_icons/#{record.icon.raw_value}.svg"
@@ -218,6 +266,66 @@
         </field>
     </record>
 
+    <!---->
+    <record id = "dmedocument_view_form_document_share" model = "ir.ui.view">
+        <field name = "name">dmedocument.document.share.view.form</field>
+        <field name = "model">dmedocument.document.share</field>
+        <field name = "arch" type = "xml">
+            <form name="Document Share" duplicate = "false" create = "false">
+                <sheet>
+                    <group>
+                        <field name="document_ids"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="is_public"/>
+                        </group>
+                        <group attrs='{"invisible": [("is_public", "=", True)]}'>
+                            <field name="shared_user_ids" widget="many2many_tags"
+                                   attrs='{"invisible": [("is_public", "=", True)]}'/>
+                            <field name="shared_group_ids" widget="many2many_tags"
+                                   attrs='{"invisible": [("is_public", "=", True)]}'/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="expired_date" autocomplete = "off"/>
+                    </group>
+                    <group>
+                        <field name="link" widget="ClipboardUrlWidget"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id = "dmedocument_view_tree_document_share" model = "ir.ui.view">
+        <field name = "name">dmedocument.document.share.view.tree</field>
+        <field name = "model">dmedocument.document.share</field>
+        <field name = "arch" type = "xml">
+            <tree string = "Document Share" create = "false" duplicate = "false" export_xlsx = "false">
+                <field name = "document_ids" widget = "many2many_tags"/>
+                <field name = "is_public" attrs='{"invisible": [("is_public", "=", False)]}'/>
+                <field name = "shared_user_ids" widget="many2many_tags" attrs='{"invisible": [("is_public", "=", True)]}'/>
+                <field name = "shared_group_ids" widget="many2many_tags" attrs='{"invisible": [("is_public", "=", True)]}'/>
+                <field name = "expired_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id = "dmedocument_view_search_document_share" model = "ir.ui.view">
+        <field name = "name">dmedocument.document.share.view.search</field>
+        <field name = "model">dmedocument.document.share</field>
+        <field name = "arch" type = "xml">
+            <search>
+                <field name = "document_ids"/>
+                <field name = "shared_user_ids"/>
+                <field name = "shared_group_ids"/>
+                <filter name = "expired_date" string = "Expired"
+                    domain = '[("expired_date", "&lt;", current_date)]'
+                />
+            </search>
+        </field>
+    </record>
 
     <!---->
 

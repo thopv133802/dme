@@ -432,7 +432,6 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
                         action["context"] = JSON.parse(action["context"])
                         action["context"]["default_workspace_name"] = workspace
                         action["context"]["default_document_type"] = "spreadsheet"
-                        action["target"] = "current"
                         return self.do_action(action)
                     }
                 })
@@ -460,7 +459,7 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
         }
     };
 
-    const DMEDocumentFormController = FormController.extend({
+    const DMEDocumentSpreadsheetController = FormController.extend({
 
     })
 
@@ -472,9 +471,9 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
         renderButtons: renderButtons
     })
 
-    const DMEDocumentFormView = FormView.extend({
+    const DMEDocumentSpreadsheetFormView = FormView.extend({
         config: _.extend({}, FormView.prototype.config, {
-            Controller: DMEDocumentFormController
+            Controller: DMEDocumentSpreadsheetController
         })
     })
 
@@ -495,14 +494,14 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
     FieldRegistry.add("GlobeUrlWidget", GlobeUrlWidget)
     ViewRegistry.add("DMEDocumentKanbanView", DMEDocumentKanbanView)
     ViewRegistry.add("DMEDocumentListView", DMEDocumentListView)
-    ViewRegistry.add("DMEDocumentFormView", DMEDocumentFormView)
+    ViewRegistry.add("DMEDocumentSpreadsheetFormView", DMEDocumentSpreadsheetFormView)
     OwlFieldRegistry.add("FieldOwlGlobeUrl", FieldOwlGlobeUrl)
 
     return {
         DMEDocumentFieldBinaryFile: DMEDocumentFieldBinaryFile,
         DMEDocumentKanbanView: DMEDocumentKanbanView,
         DMEDocumentListView: DMEDocumentListView,
-        DMEDocumentFormView: DMEDocumentFormView,
+        DMEDocumentSpreadsheetFormView: DMEDocumentSpreadsheetFormView,
         ClipboardUrlWidget: ClipboardUrlWidget,
         GlobeUrlWidget: GlobeUrlWidget,
         FieldOwlGlobeUrl: FieldOwlGlobeUrl,

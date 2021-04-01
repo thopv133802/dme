@@ -236,7 +236,6 @@ class Document(models.Model):
             record.permission_unlink = False
     permission_unlink = fields.Boolean(compute = "_compute_permission_unlink")
 
-
     FILE_EXTENTIONS = ['raw', 'html', 'ps', 'php', 'txt', 'fla', 'css', 'zip', 'sql', 'xlsx', 'dat', 'mp3', 'indd', 'xls', 'cdr', 'iso', 'none', 'avi', 'js', 'xml', 'jpg', 'wmv', 'dmg', 'pdf', 'ppt', 'flv', 'bmp', 'svg', 'mpg', 'midi', 'png', 'tif', 'dll', 'ai', 'aac', 'gif', 'jpeg', 'doc', 'mov', 'eps', 'psd', '3ds', 'cad']
 
     def default_workspace_id(self, *args):
@@ -284,14 +283,26 @@ class Document(models.Model):
     def un_archive(self):
         self.active = True
 
-
 class DocumentShare(models.Model):
     _name = "dmedocument.document.share"
     _description = _("DME Document Share")
 
+
     document_ids = fields.Many2many("dmedocument.document", string = _("Documents"))
     shared_user_ids = fields.Many2many("res.users", string = _("Users"))
     shared_group_ids = fields.Many2many("res.groups", string = _("Groups"))
-    link = fields.Char(string = _("Link"))
+    link = fields.Char(string = _("Link"), readonly = True)
     is_public = fields.Boolean(string = _("Share for all"))
     expired_date = fields.Date(string = _("Expired date"))
+    current_date = fields.Date(compute = "_compute_current_date")
+
+    def _compute_current_date(self):
+        for record in self:
+            record.current_date = fields.Date.today()
+
+    def write(self, vals):
+        if "link" not in vals or not vals["link"]:
+            document = super(DocumentShare, self).write(vals)
+            document.link = self.env['ir.config_parameter'].sudo().get_param('web.base.url') + "/dmedocument/document?link=" + jwt.encode({"id": document.id}, "dme_dtq212_doanvananh0512_hangvu912", algorithm = "HS256")
+            return document
+        return super(DocumentShare, self).write(vals)

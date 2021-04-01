@@ -3,8 +3,8 @@
 
     <menuitem id="dmedocument_menu_root" name="Document" web_icon="dmedocument,static/description/icon.png" groups = "dmedocument.dmedocument_group_user"/>
     <menuitem id="dmedocument_menu_document" name="Document" parent="dmedocument_menu_root" action="dmedocument_action_document"/>
+    <menuitem id = "dmedocument_menu_share" name = "Share history" parent = "dmedocument_menu_root" action = "dmedocument_action_document_share"/>
     <menuitem id="dmedocument_menu_configurations" name="Configurations" parent="dmedocument_menu_root"/>
     <menuitem id="dmedocument_menu_configurations_workspace" name="Workspaces" parent="dmedocument_menu_configurations" action = "dmedocument_action_workspace" groups = "dmedocument.dmedocument_group_admin"/>
     <menuitem id="dmedocument_menu_configurations_tag" name="Tags" parent="dmedocument_menu_configurations" action = "dmedocument_action_tag_category"/>
-
 </odoo>

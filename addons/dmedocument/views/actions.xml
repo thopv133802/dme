@@ -17,7 +17,6 @@
         </field>
     </record>
 
-
     <record id = "dmedocument_action_document_spreadsheet" model = "ir.actions.act_window">
         <field name = "name">Document Spreadsheet</field>
         <field name = "res_model">dmedocument.document</field>
@@ -29,6 +28,12 @@
                 "expand": "1"
             }
         </field>
+    </record>
+
+    <record model = "ir.actions.act_window" id = "dmedocument_action_document_share">
+        <field name = "name">Document Share</field>
+        <field name = "res_model">dmedocument.document.share</field>
+        <field name = "view_mode">tree,form</field>
     </record>
 
     <record model = "ir.actions.act_window" id = "dmedocument_action_workspace">
