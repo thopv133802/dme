@@ -9,9 +9,8 @@
     </template>
     <template id = "dmedocument_assets_backend" name = "DME Document Assets Backend" inherit_id = "web.assets_backend">
         <xpath expr="." position="inside">
-            <link rel="stylesheet" href="/dmedocument/static/src/css/spreadsheet/xspreadsheet.css" type = "text/css"/>
-            <link href = "/dmedocument/static/src/scss/dmedocument.scss" rel = "stylesheet" type = "text/scss"/>
             <link rel="stylesheet" href="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.css"/>
+            <link href = "/dmedocument/static/src/scss/dmedocument.scss" rel = "stylesheet" type = "text/scss"/>
             <script src="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.js"/>
             <script src="/dmedocument/static/src/js/dmedocument.js" type="text/javascript"/>
         </xpath>
