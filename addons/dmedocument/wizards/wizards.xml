@@ -66,17 +66,8 @@
         <field name="arch" type="xml">
             <form name="Document Upload" duplicate="false">
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name" class="oe_edit_only"/>
-                        <h1>
-                            <field name="name" autocomplete = "off"/>
-                        </h1>
-                    </div>
                     <group>
-                        <field name="content" filename="file_name"
-                               accepted_file_extensions='"pdf","png","jpg","jpeg","xls","xlsx","zip"'
-                               options='{"accepted_file_extensions": ["pdf", "png", "jpg", "jpeg", "xls", "xlsx", "zip"]}'/>
-                        <field name="file_name" invisible="True"/>
+                        <field name="content" widget = "many2many_binary"/>
                     </group>
 
                     <group col = "3">
@@ -162,9 +153,8 @@
                         </h1>
                     </div>
                     <group attrs='{"invisible": [("document_type", "!=", "file")]}'>
-                        <field name="content" filename="file_name"
+                        <field name="content" filename="name"
                                attrs='{"invisible": [("document_type", "!=", "file")], "required": [("document_type", "=", "file")]}'/>
-                        <field name="file_name" invisible="True"/>
                     </group>
                     <group attrs='{"invisible": [("document_type", "!=", "link")]}'>
                         <field name="link" autocomplete = "off"

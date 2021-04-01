@@ -54,8 +54,6 @@ class DocumentEdit(models.TransientModel):
         return self.env["dmedocument.document"].browse(self._context["active_id"]).name
     def _default_content(self):
         return self.env["dmedocument.document"].browse(self._context["active_id"]).content
-    def _default_file_name(self):
-        return self.env["dmedocument.document"].browse(self._context["active_id"]).file_name
     def _default_workspace_id(self):
         return self.env["dmedocument.document"].browse(self._context["active_id"]).workspace_id
     def _default_tag_ids(self):
@@ -65,9 +63,8 @@ class DocumentEdit(models.TransientModel):
     def _default_document_type(self):
         return self.env["dmedocument.document"].browse(self._context["active_id"]).document_type
 
-    name = fields.Char(string = _("Title"), required = True, default = _default_name)
+    name = fields.Char(string = _("Title"), required = True, default = _default_name, readonly = True)
     content = fields.Binary(string = _("File"), default = _default_content)
-    file_name = fields.Char(string = _("File name"), default = _default_file_name)
     workspace_id = fields.Many2one("dmedocument.workspace", string = _("Workspace"), required = True, default = _default_workspace_id)
     link = fields.Char(string = _("Link"), default = _default_link)
     document_type = fields.Char(string = _("Document type"), default = _default_document_type, readonly = True)
@@ -84,7 +81,6 @@ class DocumentEdit(models.TransientModel):
         self.env["dmedocument.document"].browse(self._context["default_document_id"]).write({
             "name": self.name,
             "content": self.content,
-            "file_name": self.file_name,
             "workspace_id": self.workspace_id,
             "tag_ids": self.tag_ids,
         })
@@ -97,14 +93,7 @@ class DocumentUpload(models.TransientModel):
     _name = "dmedocument.document.upload.wizard"
     _description = _("DME Document Upload Wizard")
 
-    name = fields.Char(string = _("Title"), required = True)
-    content = fields.Binary(string = _("File"), required = True)
-    file_name = fields.Char(string = _("File name"))
-
-    @api.onchange("file_name")
-    def on_file_name_changed(self):
-        if not self.name:
-            self.name = self.file_name
+    content = fields.Many2many("ir.attachment", string = _("Content"))
 
     def default_workspace_id(self, *args):
         if "default_workspace_name" not in self._context:
@@ -123,14 +112,16 @@ class DocumentUpload(models.TransientModel):
     )
 
     def upload(self):
-        self.env["dmedocument.document"].create({
-            "name": self.name,
-            "content": self.content,
-            "file_name": self.file_name,
-            "workspace_id": self.workspace_id.id,
-            "tag_ids": self.tag_ids.ids,
-            "document_type": "file"
-        })
+        self.env["dmedocument.document"].create([
+            {
+                "name": document.name,
+                "content": document.datas,
+                "workspace_id": self.workspace_id.id,
+                "tag_ids": self.tag_ids.ids,
+                "document_type": "file"
+            }
+            for document in self.content
+        ])
         return {
             "type": "ir.actions.client",
             "tag": "close_dialog_and_refresh"

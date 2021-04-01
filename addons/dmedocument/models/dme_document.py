@@ -183,7 +183,6 @@ class Document(models.Model):
     ], default = "upload", compute = "_compute_document_type", store = True)
     icon = fields.Char(compute = "_compute_icon", store = True, invisible = True)
 
-    file_name = fields.Char(string = _("File name"), invisible = True)
     content = fields.Binary(compute = "_compute_content", store = True, string = _("Content"))
 
     link = fields.Char(string = _("Link"))
@@ -196,7 +195,6 @@ class Document(models.Model):
     def _compute_content(self):
         for record in self:
             name = record.name
-            file_name = record.file_name
             content = record.content
             document_type = record.document_type
 
@@ -207,14 +205,11 @@ class Document(models.Model):
                         attachment_id = upload_message.attachment_ids[0]
                         if attachment_id.datas:
                             content = attachment_id.datas
-                            file_name = attachment_id.name
                             document_type = "file"
-                            if not record.name:
-                                name = attachment_id.name
+                            name = attachment_id.name
                             attachment_id.unlink()
 
             record.name = name
-            record.file_name = file_name
             record.content = content
             record.document_type = document_type
 
@@ -247,7 +242,6 @@ class Document(models.Model):
 
     workspace_id = fields.Many2one("dmedocument.workspace", string = _("Workspace"), required = True, default = default_workspace_id)
 
-
     tag_ids = fields.Many2many(
         "dmedocument.tag",
         string = _("Tags"),
@@ -266,7 +260,7 @@ class Document(models.Model):
             elif record.document_type == "spreadsheet":
                 record.icon = "spreadsheet"
             elif record.document_type == "file":
-                file_name_split = record.file_name.split(".")
+                file_name_split = record.name.split(".")
                 has_extension = len(file_name_split) > 1
                 if not has_extension:
                     record.icon = "none"
@@ -286,7 +280,6 @@ class Document(models.Model):
 class DocumentShare(models.Model):
     _name = "dmedocument.document.share"
     _description = _("DME Document Share")
-
 
     document_ids = fields.Many2many("dmedocument.document", string = _("Documents"))
     shared_user_ids = fields.Many2many("res.users", string = _("Users"))

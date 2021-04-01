@@ -92,7 +92,7 @@ class Main(Controller):
             return BadRequest(error_message)
         upload_document_activity = upload_document_activities[-1]
         document.content = base64.encodebytes(ufile.read())
-        document.file_name = ufile.filename
+        document.name = ufile.filename
         upload_document_activity.unlink()
         message_upload_document_done = request.env["mail.message"].create({
             "body": "Upload document done",
