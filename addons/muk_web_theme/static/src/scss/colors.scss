@@ -19,7 +19,6 @@
 *    along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 **********************************************************************************/
-
 $o-brand-odoo: #344955;//#243742;
 $o-brand-primary: #5D8DA8;
 
@@ -32,4 +31,20 @@ $mk-appbar-background: #232F34; //#000000;
 
 $mk-brand-gradient-start: lighten($o-brand-odoo, 10%);
 $mk-brand-gradient-end: lighten($o-brand-odoo, 20%);
+
+/*
+
+$o-brand-odoo: #03a9f4;//#243742;
+$o-brand-primary: #007ac1;
+
+$mk-required-color: #d1dfe6;
+
+$mk-apps-color: #f8f9fa;
+
+$mk-appbar-color: #dee2e6;
+$mk-appbar-background: #000000; //#000000;
+
+$mk-brand-gradient-start: lighten($o-brand-odoo, 10%);
+$mk-brand-gradient-end: lighten($o-brand-odoo, 20%);
+*/
 

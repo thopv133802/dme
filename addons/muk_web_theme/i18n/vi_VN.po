@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0-20210217\n"
+"Project-Id-Version: Odoo Server 14.0-20210330\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-30 04:53+0000\n"
-"PO-Revision-Date: 2021-03-30 04:53+0000\n"
+"POT-Creation-Date: 2021-04-01 03:10+0000\n"
+"PO-Revision-Date: 2021-04-01 03:10+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -56,7 +56,7 @@ msgstr ""
 #: code:addons/muk_web_theme/static/src/xml/views.xml:0
 #, python-format
 msgid "Actions"
-msgstr ""
+msgstr "Hành động"
 
 #. module: muk_web_theme
 #. openerp-web
@@ -96,7 +96,7 @@ msgstr ""
 #. module: muk_web_theme
 #: model_terms:ir.ui.view,arch_db:muk_web_theme.res_config_settings_view_form
 msgid "Background"
-msgstr ""
+msgstr "Nền"
 
 #. module: muk_web_theme
 #: model_terms:ir.ui.view,arch_db:muk_web_theme.res_config_settings_view_form
@@ -118,7 +118,7 @@ msgstr ""
 #. module: muk_web_theme
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__background_blend_mode__color
 msgid "Color"
-msgstr ""
+msgstr "Màu sắc"
 
 #. module: muk_web_theme
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__background_blend_mode__color-burn
@@ -143,7 +143,7 @@ msgstr "Công ty"
 #. module: muk_web_theme
 #: model:ir.model.fields,field_description:muk_web_theme.field_res_config_settings__theme_favicon
 msgid "Company Favicon"
-msgstr ""
+msgstr "Favicon công ty"
 
 #. module: muk_web_theme
 #: model:ir.model,name:muk_web_theme.model_res_config_settings
@@ -168,17 +168,23 @@ msgstr "Tạo"
 #. module: muk_web_theme
 #. openerp-web
 #: code:addons/muk_web_theme/static/src/xml/apps.xml:0
-#: code:addons/muk_web_theme/static/src/xml/appsbar.xml:0
 #, python-format
-msgid "Customer relation"
-msgstr "Quan hệ khách hàng"
+msgid "Customer"
+msgstr ""
 
 #. module: muk_web_theme
 #. openerp-web
-#: code:addons/muk_web_theme/static/src/xml/apps.xml:0
+#: code:addons/muk_web_theme/static/src/xml/appsbar.xml:0
 #, python-format
-msgid "DME COMPREHENSIVE ENTERPRISE MANAGEMENT AUTOMATION SYSTEM"
-msgstr "HỆ THỐNG TỰ ĐỘNG HÓA QTDN TOÀN DIỆN DME"
+msgid "Customer relation"
+msgstr ""
+
+#. module: muk_web_theme
+#. openerp-web
+#: code:addons/muk_web_theme/static/src/js/chrome/apps.js:0
+#, python-format
+msgid "DME comprehensive enterprise management automation system"
+msgstr "Hệ thống tự động hóa quản trị doanh nghiệp toàn diện DME"
 
 #. module: muk_web_theme
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__background_blend_mode__darken
@@ -188,7 +194,7 @@ msgstr ""
 #. module: muk_web_theme
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__background_blend_mode__difference
 msgid "Difference"
-msgstr ""
+msgstr "Chênh lệch"
 
 #. module: muk_web_theme
 #. openerp-web
@@ -209,11 +215,10 @@ msgstr "Tên hiển thị"
 
 #. module: muk_web_theme
 #. openerp-web
-#: code:addons/muk_web_theme/static/src/xml/apps.xml:0
 #: code:addons/muk_web_theme/static/src/xml/appsbar.xml:0
 #, python-format
 msgid "Document manager"
-msgstr "Quản lý tài liệu"
+msgstr ""
 
 #. module: muk_web_theme
 #. openerp-web
@@ -233,6 +238,14 @@ msgstr ""
 #, python-format
 msgid "Favorites"
 msgstr "Yêu thích"
+
+#. module: muk_web_theme
+#. openerp-web
+#: code:addons/muk_web_theme/static/src/xml/apps.xml:0
+#: code:addons/muk_web_theme/static/src/xml/apps.xml:0
+#, python-format
+msgid "HR"
+msgstr "Nhân sự"
 
 #. module: muk_web_theme
 #: model:ir.model,name:muk_web_theme.model_ir_http
@@ -276,7 +289,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__default_sidebar_preference__large
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_users__sidebar_type__large
 msgid "Large"
-msgstr ""
+msgstr "Rộng"
 
 #. module: muk_web_theme
 #: model:ir.model.fields,field_description:muk_web_theme.field_ir_http____last_update
@@ -327,7 +340,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__default_chatter_preference__normal
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_users__chatter_position__normal
 msgid "Normal"
-msgstr ""
+msgstr "Thông thường"
 
 #. module: muk_web_theme
 #. openerp-web
@@ -344,7 +357,7 @@ msgstr ""
 #. module: muk_web_theme
 #: model_terms:ir.ui.view,arch_db:muk_web_theme.res_config_settings_view_form
 msgid "Primary"
-msgstr ""
+msgstr "Chủ đạo"
 
 #. module: muk_web_theme
 #. openerp-web
@@ -357,12 +370,12 @@ msgstr "Sản phẩm"
 #. module: muk_web_theme
 #: model_terms:ir.ui.view,arch_db:muk_web_theme.res_config_settings_view_form
 msgid "Required"
-msgstr ""
+msgstr "Bắt buộc"
 
 #. module: muk_web_theme
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__background_blend_mode__saturation
 msgid "Saturation"
-msgstr ""
+msgstr "Bão hòa"
 
 #. module: muk_web_theme
 #. openerp-web
@@ -436,7 +449,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_company__default_sidebar_preference__small
 #: model:ir.model.fields.selection,name:muk_web_theme.selection__res_users__sidebar_type__small
 msgid "Small"
-msgstr ""
+msgstr "Nhỏ"
 
 #. module: muk_web_theme
 #. openerp-web
@@ -448,10 +461,16 @@ msgstr "Quản lý phần mềm"
 #. module: muk_web_theme
 #. openerp-web
 #: code:addons/muk_web_theme/static/src/xml/apps.xml:0
+#, python-format
+msgid "Task"
+msgstr ""
+
+#. module: muk_web_theme
+#. openerp-web
 #: code:addons/muk_web_theme/static/src/xml/appsbar.xml:0
 #, python-format
 msgid "Task manager"
-msgstr "Quản lý công việc"
+msgstr ""
 
 #. module: muk_web_theme
 #: model:ir.model.fields,field_description:muk_web_theme.field_res_config_settings__theme_color_appbar_background
@@ -484,10 +503,19 @@ msgid "Theme Required Color"
 msgstr ""
 
 #. module: muk_web_theme
+#. openerp-web
+#: code:addons/muk_web_theme/static/src/xml/apps.xml:0
+#, python-format
+msgid "There are no apps"
+msgstr ""
+
+#. module: muk_web_theme
 #: model:ir.model.fields,help:muk_web_theme.field_res_config_settings__theme_favicon
 msgid ""
 "This field holds the image used to display a favicon for a given company."
 msgstr ""
+"Trường này chứa hình ảnh được sử dụng để hiển thị hình đại diện nhất định "
+"cho một công ty."
 
 #. module: muk_web_theme
 #. openerp-web

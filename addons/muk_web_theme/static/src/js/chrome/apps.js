@@ -28,6 +28,7 @@ const session = require("web.session");
 
 const AppsMenu = require("web.AppsMenu");
 const MenuSearchMixin = require("muk_web_theme.MenuSearchMixin");
+const _t = core._t
 
 AppsMenu.include(_.extend({}, MenuSearchMixin, {
     events: _.extend({}, AppsMenu.prototype.events, {
@@ -75,12 +76,18 @@ AppsMenu.include(_.extend({}, MenuSearchMixin, {
         self.customerRelationshipGroupApps = self.erpApps.filter((app) => customerRelationshipGroupAppXmlIds.includes(app.xmlID));
         self.marketingGroupApps = self.erpApps.filter((app) => marketingGroupAppXmlIds.includes(app.xmlID));
         self.productGroupApps = self.erpApps.filter((app) => productGroupAppXmlIds.includes(app.xmlID));
+
+        self.$banner = $("<p/>", {
+            class: "text-white ml16",
+            style: "display: none; font-size: 22px; font-weight: 500; line-height: 46px;"
+        // }).text(_t("DME COMPREHENSIVE ENTERPRISE MANAGEMENT AUTOMATION SYSTEM"))
+        }).text(_t("DME comprehensive enterprise management automation system"))
     },
     _onLeftSubAppMenuClicked(event) {
         event.stopPropagation()
         const self = this
         self.$mainContainer.find(".sub-menu-module-group").remove()
-        self.$mainContainer.find(".module-big-group").attr("style", "display: initial")
+        self.$mainContainer.find(".module-big-group").attr("style", "")
     },
     _onEmployeeGroupClicked(event) {
         event.preventDefault()
@@ -137,6 +144,7 @@ AppsMenu.include(_.extend({}, MenuSearchMixin, {
         this.$search_input = this.$(".mk_search_input input");
         this.$search_results = this.$(".mk_search_results");
         this.$mainContainer = this.$(".main-container")
+        this.$banner.insertAfter($(document.querySelector(".o_menu_apps")))
         return this._super(...arguments);
     },
     _onSearchResultChosen(event) {
@@ -166,7 +174,7 @@ AppsMenu.include(_.extend({}, MenuSearchMixin, {
         this.$('.dropdown-menu').css({
             "background-size": "cover",
             "background-image": "url(" + url + ")",
-            "background-color": "#4a6572",
+            // "background-color": "#4a6572", //"#007ac1",
             "overflow-y": "scroll"
         });
         if (session.muk_web_theme_background_blend_mode) {
@@ -178,6 +186,18 @@ AppsMenu.include(_.extend({}, MenuSearchMixin, {
     _onMenuHide(event) {
     	return $('.oe_wait').length === 0 && !this.$('input').is(':focus');
     },
+    _onMenuShown(event) {
+        $(document.querySelector(".o_menu_brand")).attr("style", "display: none !important")
+        $(document.querySelector(".o_menu_sections")).attr("style", "display: none !important")
+        $(document.querySelector(".o_menu_apps > .dropdown > a > i")).attr("class", "fa fa-angle-left")
+        this.$banner.css("display", "inline-block")
+    },
+    _onMenuHidden(event) {
+        $(document.querySelector(".o_menu_brand")).attr("style", "")
+        $(document.querySelector(".o_menu_sections")).attr("style", "")
+        $(document.querySelector(".o_menu_apps > .dropdown > a > i")).attr("class", "fa fa-th")
+        this.$banner.css("display", "none")
+    }
 }));
 
 });
