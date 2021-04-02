@@ -1,16 +1,88 @@
 import base64
-import json
+import io
+import os
+import re
+import subprocess
+
 from dateutil import parser
 import humanize
 import jwt
-from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import Forbidden, BadRequest, NotFound
 
 from odoo import fields
 from odoo.addons.web_editor.controllers.main import logger
-from odoo.http import route, Controller, request, Response
+from odoo.http import route, Controller, request
 
+def docx2pdf_linux(docx_file_name, docx2pdf_folder, timeout = None):
+    input_file_path = "{}/{}".format(docx2pdf_folder, docx_file_name)
+    cmd = "/usr/bin/libreoffice --headless --convert-to pdf --outdir /filestore/docx2pdf".split() + [input_file_path]
+    process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout = timeout)
+    process_output = process.stdout.decode()
+    output_file_path = re.search('-> (.*?) using filter', process_output).group(1)
+    file = open(output_file_path, "rb")
+    file_content = file.read()
+    file.close()
+    os.remove(input_file_path)
+    os.remove(output_file_path)
+    return file_content
+def xlsx2pdf_linux(xlsx_file_name, xlsx2pdf_folder, timeout = None):
+    input_file_path = "{}/{}".format(xlsx2pdf_folder, xlsx_file_name)
+    cmd = "/usr/bin/libreoffice --headless --convert-to pdf --outdir /filestore/xlsx2pdf".split() + [input_file_path]
+    process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout = timeout)
+    process_output = process.stdout.decode()
+    output_file_path = re.search('-> (.*?) using filter', process_output).group(1)
+    file = open(output_file_path, "rb")
+    file_content = file.read()
+    file.close()
+    os.remove(input_file_path)
+    os.remove(output_file_path)
+    return file_content
 class Main(Controller):
+    @route("/dmedocument/document/docx2pdf/<int:document_id>", type = "http", auth = "user")
+    def docx2pdf(self, document_id):
+        document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
+        if not document:
+            return NotFound("Document doesn't exists.")
+        if not document.content:
+            return BadRequest("Document is empty.")
+        if document.icon not in ["doc", "docx"]:
+            return BadRequest("Document isn't in docx format")
+        if len(document.content) > 1_000_000:
+            return BadRequest("Document size is too large to be previewed")
+        content = base64.b64decode(document.content)
+        docx2pdf_folder = "/filestore/docx2pdf"
+        os.makedirs(docx2pdf_folder, exist_ok = True)
+        docx_file_name = "docx_{}.docx".format(document_id)
+        file = open("{}/{}".format(docx2pdf_folder, docx_file_name), "wb")
+        file.write(content)
+        file.close()
+        pdf = docx2pdf_linux(docx_file_name, docx2pdf_folder)
+        return request.make_response(pdf, headers = [
+            ("Content-Length", len(pdf))
+        ])
+    @route("/dmedocument/document/xlsx2pdf/<int:document_id>", type = "http", auth = "user")
+    def xlsx2pdf(self, document_id):
+        document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
+        if not document:
+            return NotFound("Document doesn't exists.")
+        if not document.content:
+            return BadRequest("Document is empty.")
+        if document.icon not in ["xls", "xlsx"]:
+            return BadRequest("Document isn't in xlsx format")
+        if len(document.content) > 5_000_000:
+            return BadRequest("Document size is too large to be previewed")
+        content = base64.b64decode(document.content)
+        xlsx2pdf_folder = "/filestore/xlsx2pdf"
+        os.makedirs(xlsx2pdf_folder, exist_ok = True)
+        xlsx_file_name = "xlsx_{}.xlsx".format(document_id)
+        file = open("{}/{}".format(xlsx2pdf_folder, xlsx_file_name), "wb")
+        file.write(content)
+        file.close()
+        pdf = xlsx2pdf_linux(xlsx_file_name, xlsx2pdf_folder)
+        return request.make_response(pdf, headers = [
+            ("Content-Length", len(pdf))
+        ])
+
     @route("/dmedocument/document/permission/upload", type = "json", auth = "user")
     def permission_upload(self, document_id):
         document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
@@ -20,6 +92,12 @@ class Main(Controller):
         if not upload_document_activities:
             return [False, "Current user doesn't have permission to upload document."]
         return [True, ""]
+    @route("/dmedocument/document/spreadsheet_content", type = "json", auth = "user")
+    def document_spreadsheet_content(self, document_id):
+        document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
+        if not document:
+            return[False, "Document {} doesn't exists.".format(document_id)]
+        return [True, document.spreadsheet_content]
     @route("/dmedocument/document", type = "http", auth = "public", website = True)
     def document(self, link):
         infos = jwt.decode(link, "dme_dtq212_doanvananh0512_hangvu912", algorithms = ["HS256"])

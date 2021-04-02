@@ -123,7 +123,6 @@
             >
                 <field name="create_uid"/>
                 <field name="name"/>
-                <field name="content"/>
                 <field name="icon"/>
                 <field name="document_type"/>
                 <field name="permission_write"/>
@@ -131,12 +130,11 @@
                 <field name="active"/>
                 <field name="id"/>
                 <field name="link"/>
-                <field name="spreadsheet_content"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card o_kanban_record_has_image_fill">
                             <t t-set="is_document_viewable"
-                               t-value="new RegExp('(gif|jpeg|jpg|png|pdf|spreadsheet)').test(record.icon.raw_value)"/>
+                               t-value="new RegExp('(gif|jpeg|jpg|png|pdf|spreadsheet|doc|xls)').test(record.icon.raw_value)"/>
                             <a t-attf-class="#{record.document_type.raw_value === 'upload' ? 'dme-document-fill' : ''} #{record.document_type.raw_value === 'link' ? 'dme-document-link' : ''}  #{is_document_viewable ? 'o_Attachment_image o-attachment-viewable dme-document-viewer' : ''}">
                                 <img alt="No Image"
                                      t-attf-src="/dmedocument/static/src/img/file_icons/#{record.icon.raw_value}.svg"
@@ -149,6 +147,7 @@
                                             <span class="fa fa-file">
                                             </span>
                                             <b>
+                                                <field name = "id"/> -
                                                 <field name="name"/>
                                             </b>
                                         </div>

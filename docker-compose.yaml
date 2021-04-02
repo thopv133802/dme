@@ -1,7 +1,8 @@
-version: "3"
+version: "3.3"
 services:
+  #loi vi permission defined
   web-service:
-    image: odoo:14
+    image: thopv133802/odoo:14
     depends_on:
       - db-service
     ports:
@@ -17,6 +18,7 @@ services:
       - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
+      - ./filestore:/filestore
   db-service:
     image: postgres:12
     restart: always

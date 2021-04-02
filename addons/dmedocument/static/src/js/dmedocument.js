@@ -264,7 +264,6 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
         _onDocumentViewerButtonClicked: function () {
             const self = this
             if (self.modelName !== "dmedocument.document") return
-
             if(self.record.document_type.raw_value === "spreadsheet") {
                 const $dialogManager = $(".o_DialogManager")
                 if ($dialogManager) {
@@ -285,23 +284,38 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
                             width: () => document.documentElement.clientWidth * 0.9
                         },
                     })
-                        .loadData(self.record.spreadsheet_content && self.record.spreadsheet_content.raw_value ? JSON.parse(self.record.spreadsheet_content.raw_value) : [{}])
-                    const $spreadsheet = $dialogContent.find(".x-spreadsheet").first()
 
-                    $spreadsheet.find(".x-spreadsheet-menu > li").first().remove()
-                    const $bottombar = $spreadsheet.find(".x-spreadsheet-bottombar")
-                    $bottombar.css({"padding-left": 0, "border-bottom": "1px solid #e0e2e4"})
-                    $bottombar.find(".x-spreadsheet-dropdown").remove()
-                    $bottombar.prependTo($spreadsheet)
+                    self._rpc({
+                        "route": "/dmedocument/document/spreadsheet_content",
+                        "params": {
+                            "document_id": self.record.id.raw_value
+                        }
+                    }).then(function(response) {
+                        const [status, spreadsheet_content] = response
+                        if (status){
+                            spreadsheet.loadData(spreadsheet_content ? JSON.parse(spreadsheet_content) : [{}])
+                            const $spreadsheet = $dialogContent.find(".x-spreadsheet").first()
 
-                    $dialogManager.empty().append($dialogContent)
+                            $spreadsheet.find(".x-spreadsheet-menu > li").first().remove()
+                            const $bottombar = $spreadsheet.find(".x-spreadsheet-bottombar")
+                            $bottombar.css({"padding-left": 0, "border-bottom": "1px solid #e0e2e4"})
+                            $bottombar.find(".x-spreadsheet-dropdown").remove()
+                            $bottombar.prependTo($spreadsheet)
 
-                    $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
-                        ev.stopPropagation()
-                        const workbook = xtos(spreadsheet.getData())
-                        XLSX.writeFile(workbook, self.record.name.raw_value + ".xlsx")
+                            $dialogManager.empty().append($dialogContent)
+
+                            $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
+                                ev.stopPropagation()
+                                const workbook = xtos(spreadsheet.getData())
+                                XLSX.writeFile(workbook, self.record.name.raw_value + ".xlsx")
+                            })
+                        }
+                        else {
+                            self.displayNotification({
+                                title: _t(spreadsheet_content)
+                            })
+                        }
                     })
-
                 }
             }
             else {
@@ -309,6 +323,10 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
                 let iFrameURL = fileURL
                 if (self.record.icon.raw_value === "pdf")
                     iFrameURL = "/web/static/lib/pdfjs/web/viewer.html?file=" + iFrameURL
+                else if (["doc", "docx"].includes(self.record.icon.raw_value))
+                    iFrameURL = "/web/static/lib/pdfjs/web/viewer.html?file=/dmedocument/document/docx2pdf/"  + self.record.id.raw_value
+                else if (["xls", "xlsx"].includes(self.record.icon.raw_value))
+                    iFrameURL = "/web/static/lib/pdfjs/web/viewer.html?file=/dmedocument/document/xlsx2pdf/" + self.record.id.raw_value
 
                 const $dialogManager = $(".o_DialogManager")
                 if ($dialogManager) {
