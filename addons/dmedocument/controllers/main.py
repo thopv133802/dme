@@ -38,6 +38,30 @@ def xlsx2pdf_linux(xlsx_file_name, xlsx2pdf_folder, timeout = None):
     os.remove(output_file_path)
     return file_content
 class Main(Controller):
+    @route("/dmedocument/document/document_size/<int:document_id>", type = "json", auth = "user")
+    def document_size(self, document_id):
+        document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
+        if not document:
+            return NotFound("Document doesn't exists.")
+        if document.content:
+            return len(document.content)
+        elif document.spreadsheet_content:
+            return len(document.spreadsheet_content)
+        else:
+            return BadRequest("Document is empty.")
+
+    @route("/dmedocument/document/document_viewable/<int:document_id>", type = "json", auth = "user")
+    def document_viewable(self, document_id):
+        document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
+        if not document:
+            return NotFound("Document doesn't exists.")
+        if document.content:
+            return [len(document.content) < 5_000_000, "Too large"]
+        elif document.spreadsheet_content:
+            return [len(document.spreadsheet_content) < 5_000_000, "Too large"]
+        else:
+            return [False, ]
+
     @route("/dmedocument/document/docx2pdf/<int:document_id>", type = "http", auth = "user")
     def docx2pdf(self, document_id):
         document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
@@ -47,7 +71,7 @@ class Main(Controller):
             return BadRequest("Document is empty.")
         if document.icon not in ["doc", "docx"]:
             return BadRequest("Document isn't in docx format")
-        if len(document.content) > 1_000_000:
+        if len(document.content) > 5_000_000:
             return BadRequest("Document size is too large to be previewed")
         content = base64.b64decode(document.content)
         docx2pdf_folder = "/filestore/docx2pdf"

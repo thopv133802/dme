@@ -264,6 +264,7 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
         _onDocumentViewerButtonClicked: function () {
             const self = this
             if (self.modelName !== "dmedocument.document") return
+
             if(self.record.document_type.raw_value === "spreadsheet") {
                 const $dialogManager = $(".o_DialogManager")
                 if ($dialogManager) {
@@ -328,23 +329,59 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
                 else if (["xls", "xlsx"].includes(self.record.icon.raw_value))
                     iFrameURL = "/web/static/lib/pdfjs/web/viewer.html?file=/dmedocument/document/xlsx2pdf/" + self.record.id.raw_value
 
-                const $dialogManager = $(".o_DialogManager")
-                if ($dialogManager) {
-                    const $dialogContent = $(QWeb.render("dmedocument.dmedocument_template_document_viewer", {
-                        "document_id": self.record.id.raw_value,
-                        "document_name": self.record.name.raw_value,
-                        "iframe_url": iFrameURL
-                    }))
-                    $dialogContent.find(".o_AttachmentViewer_headerItemButtonClose").click(function (ev) {
-                        ev.stopPropagation()
-                        $dialogManager.empty()
+                if(["doc", "docx", "xls", "xlsx"].includes(self.record.icon.raw_value)) {
+                    self._rpc({
+                        "route": "/dmedocument/document/document_viewable/" + self.record.id.raw_value,
+                        "params": {}
+                    }).then(function(response) {
+                        const [viewable, message] = response
+                        if(viewable) {
+                            const $dialogManager = $(".o_DialogManager")
+                            if ($dialogManager) {
+                                const $dialogContent = $(QWeb.render("dmedocument.dmedocument_template_document_viewer", {
+                                    "document_id": self.record.id.raw_value,
+                                    "document_name": self.record.name.raw_value,
+                                    "iframe_url": iFrameURL
+                                }))
+                                $dialogContent.find(".o_AttachmentViewer_headerItemButtonClose").click(function (ev) {
+                                    ev.stopPropagation()
+                                    $dialogManager.empty()
+                                })
+                                $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
+                                    ev.stopPropagation()
+                                    window.open(fileURL + "?download=True")
+                                })
+                                $dialogManager.empty().append($dialogContent)
+                            }
+                        }
+                        else {
+                            self.displayNotification({
+                                title: _t("This document cannot be previewed" + (message ?  ": " + message : ""))
+                            })
+                        }
                     })
-                    $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
-                        ev.stopPropagation()
-                        window.open(fileURL + "?download=True")
-                    })
-                    $dialogManager.empty().append($dialogContent)
                 }
+                else {
+                    const $dialogManager = $(".o_DialogManager")
+                    if ($dialogManager) {
+                        const $dialogContent = $(QWeb.render("dmedocument.dmedocument_template_document_viewer", {
+                            "document_id": self.record.id.raw_value,
+                            "document_name": self.record.name.raw_value,
+                            "iframe_url": iFrameURL
+                        }))
+                        $dialogContent.find(".o_AttachmentViewer_headerItemButtonClose").click(function (ev) {
+                            ev.stopPropagation()
+                            $dialogManager.empty()
+                        })
+                        $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
+                            ev.stopPropagation()
+                            window.open(fileURL + "?download=True")
+                        })
+                        $dialogManager.empty().append($dialogContent)
+                    }
+                }
+
+
             }
         }
     })
