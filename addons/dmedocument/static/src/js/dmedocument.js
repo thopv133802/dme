@@ -8,6 +8,7 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
     const FormView = require("web.FormView")
     const KanbanView = require("web.KanbanView")
     const KanbanRecord = require("web.KanbanRecord")
+    const KanbanRenderer = require("web.KanbanRenderer")
     const ListView = require("web.ListView")
     const ListController = require("web.ListController")
     const Activity = require("mail.Activity")
@@ -197,8 +198,26 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
             "click .dme-document-viewer": "_onDocumentViewerButtonClicked",
             "click .dme-document-fill": "_onDocumentFillButtonClicked",
             "click .dme-document-add-link": "_onDocumentAddLinkButtonClicked",
-            "click .dme-document-spreadsheet-download": "_onDocumentSpreadsheetDownloadClicked"
+            "click .dme-document-spreadsheet-download": "_onDocumentSpreadsheetDownloadClicked",
+            "click .dme-document-kanban-record": "_onDMEDocumentKanbanRecordClicked"
         }),
+        _onDMEDocumentKanbanRecordClicked: function(event) {
+            event.preventDefault()
+            event.stopPropagation()
+            this.trigger_up("dme-document-kanban-record-clicked", {
+                document: {
+                    id: this.record.id.raw_value,
+                    document_type: this.record.document_type.raw_value,
+                    active: this.record.active.raw_value,
+                    permission_write: this.record.permission_write.raw_value,
+                    icon: this.record.icon.raw_value,
+                    name: this.record.name.raw_value,
+                    workspace_id: this.record.workspace_id.raw_value,
+                    tag_ids: this.record.tag_ids.raw_value,
+                    owner: this.record.owner.raw_value
+                }
+            })
+        },
         _onDocumentSpreadsheetDownloadClicked: function(clickEvent) {
             clickEvent.stopPropagation()
             clickEvent.preventDefault()
@@ -235,12 +254,21 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
                             method: form.method,
                             body: new FormData(form)
                         }).then(function(response) {
-                            console.log(response)
                             self.trigger_up('reload', { keepChanges: true });
                             $formContainer.remove()
                             Framework.unblockUI()
+                            response.json()
+                                .then((message) => {
+                                    self.displayNotification({
+                                        title: message
+                                    })
+                                })
                         }, function(error) {
+                            console.log("Document fill failed: ")
                             console.log(error)
+                            self.displayNotification({
+                                title: error
+                            })
                         })
                         Framework.blockUI()
                     })
@@ -380,8 +408,6 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
                         $dialogManager.empty().append($dialogContent)
                     }
                 }
-
-
             }
         }
     })
@@ -518,7 +544,284 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
 
     })
 
+    const DMEDocumentKanbanRenderer = KanbanRenderer.extend({
+
+    })
+
     const DMEDocumentKanbanController = KanbanController.extend({
+        custom_events: _.extend({}, KanbanController.prototype.custom_events, {
+            "dme-document-kanban-record-clicked": "_onKanbanRecordClicked"
+        }),
+        events: _.extend({}, KanbanController.prototype.custom_events, {
+            "click .dme-document-btn-download": "_onDocumentDownload",
+            "click .dme-document-btn-share": "_onDocumentShare",
+            "click .dme-document-btn-archive": "_onDocumentArchive",
+            "click .dme-document-btn-replace": "_onDocumentReplace",
+            "change .dme-document-name": "_onDocumentChangeName",
+            "change .dme-document-workspace": "_onDocumentChangeWorkspace",
+            "change .dme-document-append-tag": "_onDocumentAppendTag",
+            "click .dme-document-btn-remove-tag": "_onDocumentRemoveTag",
+        }),
+
+        init: function() {
+            const self = this
+            self._super.apply(this, arguments)
+            self.$sidebar = $(QWeb.render("dmedocument.dmedocument_document_sidebar"))
+            self.$sidebar_header = self.$sidebar.find(".dme-document-sidebar-header").first()
+            self.$sidebar_content = self.$sidebar.find(".dme-document-sidebar-content").first()
+            self.blurSidebar()
+            self.$sidebar_content_buttons = self.$sidebar_content.find(".dme-document-sidebar-content-buttons").first()
+            self.$sidebar_content_button_download = self.$sidebar_content_buttons.find(".dme-document-btn-download").first()
+            self.$sidebar_content_button_share = self.$sidebar_content_buttons.find(".dme-document-btn-share").first()
+            self.$sidebar_content_button_replace = self.$sidebar_content_buttons.find(".dme-document-btn-replace").first()
+            self.$sidebar_content_button_archive = self.$sidebar_content.find(".dme-document-btn-archive").first()
+            self.$sidebar_content_fields = self.$sidebar_content.find(".dme-document-sidebar-content-fields").first()
+            self.$sidebar_content_field_name = self.$sidebar_content_fields.find(".dme-document-name").first()
+            self.$sidebar_content_field_owner = self.$sidebar_content_fields.find(".dme-document-owner").first()
+            self.$sidebar_content_field_workspace = self.$sidebar_content_fields.find(".dme-document-workspace").first()
+            self.$sidebar_content_field_datalist_tags = self.$sidebar_content_fields.find(".dme-document-datalist-tags").first()
+            self.$sidebar_content_field_tags = self.$sidebar_content_fields.find(".dme-document-tags").first()
+            self.$sidebar_content_field_append_tag = self.$sidebar_content_fields.find(".dme-document-append-tag").first()
+        },
+
+        start: function() {
+            const self = this
+            return Promise.all([self._super.apply(this, arguments),
+                self._rpc({
+                    model: "dmedocument.workspace",
+                    method: "search_read",
+                    args: [[], ["id", "name"]]
+                }).then(function(workspaces) {
+                    self.workspaces = workspaces
+                }),
+            ])
+            .then(function() {
+                self.$el.find(".o_content").append(self.$sidebar)
+            })
+        },
+
+        blurSidebar: function() {
+            this.$sidebar_header.attr("style", "display: none !important;")
+            this.$sidebar_content.attr("style", "display: none !important;")
+        },
+        setVisibility: function($element, isVisible) {
+            if(isVisible)
+                $element.attr("style", "display: initial;")
+            else
+                $element.attr("style", "display: none !important;")
+        },
+        _onDocumentAppendTag: function(event) {
+            const self = this
+            if(!self.tags) return
+            const tag_name = $(event.currentTarget).val()
+            const tag = self.tags.find((tag) => tag.name === tag_name)
+            if (!tag) return
+            this._rpc({
+                model: "dmedocument.document",
+                method: "append_tag",
+                args: [self.document.id, tag.id]
+            }).then((document) => {
+                self.document = document
+                self._renderSidebarContentFieldTags()
+                self.trigger_up("reload", {
+                    keepChanges: true
+                })
+            })
+        },
+        _onDocumentRemoveTag: function(event) {
+            const self = this
+            const tag_id = event.currentTarget.getAttribute("data-id")
+            this._rpc({
+                model: "dmedocument.document",
+                method: "remove_tag",
+                args: [
+                    self.document.id,
+                    tag_id
+                ]
+            }).then((document) => {
+                self.document = document
+                self._renderSidebarContentFieldTags()
+                self.trigger_up("reload", {
+                    keepChanges: true
+                })
+            })
+        },
+        _onDocumentDownload: function() {
+            window.open("/web/content/dmedocument.document/" + this.document.id + "/content?download=True")
+        },
+        _onDocumentShare: function() {
+            const self = this
+            if (!self.document) return
+            self._rpc({
+                route: "/web/action/load",
+                params: {
+                    action_id: "dmedocument.dmedocument_action_document_share_wizard"
+                }
+            }).then(function(action) {
+                if(!action) return
+                action["context"] = JSON.parse(action["context"])
+                action["context"]["default_document_ids"] = [self.document.id]
+                self.do_action(action)
+            })
+        },
+        _onDocumentChangeName: function(event) {
+            const self = this
+            if(!self.document) return
+            self._rpc({
+                model: "dmedocument.document",
+                method: "change_name",
+                args: [self.document.id, $(event.currentTarget).val()]
+            }).then(() => self.update({}, {
+                reload: true
+            }))
+        },
+        _onDocumentArchive: function() {
+            const self = this
+            if (!self.document) return
+            self._rpc({
+                model: "dmedocument.document",
+                method: "archive_by_id",
+                args: [
+                    self.document.id
+                ]
+            }).then(() => {
+                self.update({}, {
+                    reload: true
+                })
+                self.$sidebar_header.attr("style", "display: none !important;")
+                self.$sidebar_content.attr("style", "display: none !important;")
+            })
+        },
+        _onKanbanRecordClicked: function(event) {
+            const document = event.data.document
+            if (!document) return
+
+            const self = this
+            self.document = document
+
+            self.$sidebar_header.attr("style", "display: initial")
+            self.$sidebar_content.attr("style", "display: initial")
+
+            self.$sidebar_header.empty().append($("<img/>", {
+                src: "/dmedocument/static/src/img/file_icons/" + document.icon + ".svg",
+                style: "width: 80px; height: 80px;"
+            }))
+
+            self.setVisibility(self.$sidebar_content_button_download, document.permission_write && ["file"].includes(document.document_type))
+            self.setVisibility(self.$sidebar_content_button_share, document.active)
+            self.setVisibility(self.$sidebar_content_button_replace, document.permission_write && document.document_type === "file")
+            self.setVisibility(self.$sidebar_content_button_archive, document.permission_write && document.active)
+
+            self.$sidebar_content_field_name.val(document.name.substring(0, document.name.lastIndexOf(".")))
+            self.$sidebar_content_field_owner.val(document.owner)
+
+            self._renderSidebarContentFieldWorkspace()
+            self._renderSidebarContentFieldTags()
+        },
+        _renderSidebarContentFieldWorkspace: function() {
+            const self = this
+            self.$sidebar_content_field_workspace.empty()
+            self.workspaces.forEach((workspace) => {
+                self.$sidebar_content_field_workspace.append($(`
+                    <option value = "${workspace.id}" ${workspace.id === self.document.workspace_id ? "selected" : ""}>${workspace.name}</option>
+                `))
+            })
+        },
+        _renderSidebarContentFieldTags: function() {
+            const self = this
+            self.$sidebar_content_field_tags.empty()
+            self.$sidebar_content_field_datalist_tags.empty()
+            self.$sidebar_content_field_append_tag.val("")
+            self._rpc({
+                model: "dmedocument.tag",
+                method: "search_read_by_workspace",
+                args: [
+                    self.document.workspace_id
+                ]
+            }).then((tags) => {
+                self.tags = tags
+                tags.forEach((tag) => {
+                    if(self.document.tag_ids.includes(tag.id)) {
+                        self.$sidebar_content_field_tags.append($(`
+                            <div class="input-group mb-2">
+                              <input class="form-control" value = "${tag.name}">
+                              <div class="input-group-append">
+                                <button class="btn btn-danger fa fa-remove dme-document-btn-remove-tag" data-id = "${tag.id}"/>
+                              </div>
+                            </div>
+                        `))
+                    }
+                    else {
+                        self.$sidebar_content_field_datalist_tags.append($(`
+                            <option value = "${tag.name}"></option>
+                        `))
+                    }
+                })
+            })
+        },
+        _onDocumentReplace: function() {
+            const self = this
+            if (!self.document) return
+            const $formContainer = $(QWeb.render("dmedocument.dmedocument_template_document_upload", {
+                fileupload_id: self.fileupload_id,
+                csrf_token: WebCore.csrf_token,
+                accepted_file_extensions: "*",
+                fileupload_action: "/dmedocument/document/replace_content",
+                document_id: self.document.id
+            }))
+
+            const $form = $formContainer.find(".dme-form-document-upload")
+            $form.on("submit", function(submitEvent) {
+                submitEvent.preventDefault()
+                const form = submitEvent.currentTarget;
+                fetch(form.action, {
+                    method: form.method,
+                    body: new FormData(form)
+                }).then(function(response) {
+                    self.trigger_up('reload', { keepChanges: true });
+                    $formContainer.remove()
+                    Framework.unblockUI()
+                    response.json()
+                        .then((document) => {
+                            self.trigger_up("dme-document-kanban-record-clicked", {
+                                document: document
+                            })
+                        })
+
+                }, function(error) {
+                    self.displayNotification({
+                        title: error
+                    })
+                })
+                Framework.blockUI()
+            })
+
+            const $input = $formContainer.find(".dme-input-document-upload")
+            $input.on("change", function(changeEvent) {
+                $form.submit()
+            })
+
+            self.$el.append($formContainer)
+            $input.click()
+        },
+
+        _onDocumentChangeWorkspace: function(event) {
+            const self = this
+            if (!self.document) return
+            self._rpc({
+                model: "dmedocument.document",
+                method: "write",
+                args: [
+                    self.document.id,
+                    {
+                        "workspace_id": self.$sidebar_content_field_workspace.children("option:selected").val()
+                    }
+                ]
+            }).then(() => {
+                self.trigger_up("reload", {keepChanges: true})
+                self.blurSidebar()
+            })
+        },
         renderButtons: renderButtons
     })
 
@@ -534,13 +837,14 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
 
     const DMEDocumentKanbanView = KanbanView.extend({
         config: _.extend({}, KanbanView.prototype.config, {
-            Controller: DMEDocumentKanbanController
+            Controller: DMEDocumentKanbanController,
+            Renderer: DMEDocumentKanbanRenderer,
         })
     })
 
     const DMEDocumentListView = ListView.extend({
         config: _.extend({}, ListView.prototype.config, {
-            Controller: DMEDocumentListController
+            Controller: DMEDocumentListController,
         })
     })
 
@@ -560,7 +864,8 @@ odoo.define("dmedocument.document.view.kanban.widgets", function (require) {
         ClipboardUrlWidget: ClipboardUrlWidget,
         GlobeUrlWidget: GlobeUrlWidget,
         FieldOwlGlobeUrl: FieldOwlGlobeUrl,
-        FieldSpreadsheet: FieldSpreadsheet
+        FieldSpreadsheet: FieldSpreadsheet,
+        DMEDocumentKanbanRenderer: DMEDocumentKanbanRenderer
     }
 })
 

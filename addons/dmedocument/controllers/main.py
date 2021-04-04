@@ -1,5 +1,6 @@
 import base64
 import io
+import json
 import os
 import re
 import subprocess
@@ -122,6 +123,7 @@ class Main(Controller):
         if not document:
             return[False, "Document {} doesn't exists.".format(document_id)]
         return [True, document.spreadsheet_content]
+
     @route("/dmedocument/document", type = "http", auth = "public", website = True)
     def document(self, link):
         infos = jwt.decode(link, "dme_dtq212_doanvananh0512_hangvu912", algorithms = ["HS256"])
@@ -183,18 +185,15 @@ class Main(Controller):
     def document_fill(self, document_id, ufile):
         document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
         if not document:
-            error_message = "<p>Failed</p> Document {} doesn't exists.".format(document_id)
-            logger.error(error_message)
-            return BadRequest(error_message)
+            return request.make_response("Failed. Document {} doesn't exists.".format(document_id))
 
         upload_document_activities = document.activity_ids.filtered_domain([("can_write", "=", True), ("activity_category", "=like", "upload_file")])
         if not upload_document_activities:
-            error_message = "<p>Failed</p> There are no upload_document can_write activities available."
-            logger.error(error_message)
-            return BadRequest(error_message)
+            return request.make_response("There are no upload_document can_write activities available.")
         upload_document_activity = upload_document_activities[-1]
         document.content = base64.encodebytes(ufile.read())
         document.name = ufile.filename
+        document.document_type = "file"
         upload_document_activity.unlink()
         message_upload_document_done = request.env["mail.message"].create({
             "body": "Upload document done",
@@ -202,4 +201,23 @@ class Main(Controller):
         })
         if message_upload_document_done:
             document.message_ids |= message_upload_document_done
-        return "<p>Success</p>"
+        return request.make_response("Success")
+
+
+    @route("/dmedocument/document/replace_content", type = "http", auth = "user")
+    def document_replace_content(self, document_id, ufile):
+        document = request.env["dmedocument.document"].search([("id", "=", document_id)], limit = 1)
+        if not document:
+            error_message = "<p>Failed</p> Document {} doesn't exists.".format(document_id)
+            logger.error(error_message)
+            return BadRequest(error_message)
+
+        document.content = base64.encodebytes(ufile.read())
+        document.name = ufile.filename
+        return request.make_response(json.dumps({
+            "id": document.id,
+            "document_type": document.document_type,
+            "icon": document.icon,
+            "active": document.active,
+            "permission_write": document.permission_write,
+        }))

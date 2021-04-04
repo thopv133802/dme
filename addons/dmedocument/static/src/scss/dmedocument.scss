@@ -2,7 +2,7 @@
   min-width: 8rem;
 }
 
-.dme-document-fill, .dme-document-link{
+.dme-document-fill, .dme-document-link {
   cursor: pointer;
   padding: 4px;
 
@@ -19,6 +19,7 @@
     background-color: rgba(0, 0, 0, 0.2);
   }
 }
+
 .o_act_window {
   overflow-x: hidden
 }
@@ -26,3 +27,30 @@
 .x-spreadsheet {
   width: 100%
 }
+
+.dme-document-kanban-record {
+  cursor: pointer;
+
+  &:focus, &:focus-within {
+    -webkit-box-shadow: 1px 1px 1px 0px gray('600');
+    -moz-box-shadow: 1px 1px 1px 0px gray('600');
+    box-shadow: 1px 1px 1px 0px gray('600');
+  }
+}
+
+.dme-document-sidebar {
+  flex: 0 0 320px;
+  overflow: auto;
+  color: #f2f2f2;
+  background-color: #3F3F3F;
+  height: 100%;
+
+  .dme-document-sidebar-header {
+    padding: 8px;
+    background-color: #2E2E2E;
+    border-bottom: 1px solid #1A1A1A;
+    min-height: 120px;
+  }
+}
+
+

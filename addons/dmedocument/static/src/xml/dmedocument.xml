@@ -149,4 +149,68 @@
         </div>
     </t>
 
+    <t t-name = "dmedocument.dmedocument_document_sidebar">
+        <div class = "dme-document-sidebar d-flex flex-column">
+            <div class = "dme-document-sidebar-header d-flex align-items-center justify-content-center">
+
+            </div>
+            <div class = "dme-document-sidebar-content flex-grow-1 p-3">
+                <div class = "dme-document-sidebar-content-actions">
+                    <div class="btn-group dme-document-sidebar-content-buttons" role="group" aria-label="Document operation">
+                      <button type="button" class="btn btn-secondary dme-document-btn-download fa fa-download"/>
+                      <button type="button" class="btn btn-secondary dme-document-btn-share fa fa-share-alt"/>
+                      <button type="button" class="btn btn-secondary dme-document-btn-replace fa fa-retweet"/>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary dme-document-btn-archive fa fa-archive float-right"/>
+                </div>
+                <div class = "dme-document-sidebar-content-fields mt-3">
+                    <table class = "table table-sm table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for = "name" class = "text-white m-0 pt4">Name</label>
+                                </td>
+                                <td>
+                                    <input class = "dme-document-name form-control" id = "name" autocomplete = "off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for = "owner" class = "text-white m-0 pt4">Owner</label>
+                                </td>
+                                <td>
+                                    <input class = "dme-document-owner form-control" id = "owner" readonly = "readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for = "workspace" class = "text-white m-0 pt4">Workspace</label>
+                                </td>
+                                <td>
+                                    <select class = "dme-document-workspace form-control" id = "workspace">
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for = "tags" class = "text-white m-0 pt4">Tags</label>
+                                </td>
+                                <td>
+                                    <div class = "dme-document-tags">
+
+                                    </div>
+                                    <input class = "dme-document-append-tag form-control" id = "tags" placeholder = "+ Append tag" list = "datalist_tags"/>
+                                    <datalist id = "datalist_tags" class = "dme-document-datalist-tags">
+
+                                    </datalist>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
 </templates>

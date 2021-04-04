@@ -1,15 +1,10 @@
-import base64
-import random
-from datetime import timedelta
-from mimetypes import guess_type
-
-import jwt
-
-from odoo import models, fields, api, exceptions
-from odoo.tools.translate import _, _logger
-import html2text
-
 import os
+import random
+
+from ..utils import FileUtils
+from odoo import models, fields, api
+from odoo.tools.translate import _, _logger
+
 
 class DocumentWorkSpace(models.Model):
     _name = "dmedocument.workspace"
@@ -152,7 +147,15 @@ class DocumentTag(models.Model):
             names.append((record.id,  (record.category_id.name + " > " if record.category_id else "") + record.name))
         return names
 
-
+    @api.model
+    def search_read_by_workspace(self, workspace_id):
+        tags = []
+        for tag in self.env["dmedocument.tag"].search([("workspace_id", "=", workspace_id)]):
+            tags.append({
+                "id": tag.id,
+                "name": (tag.category_id.name + " > " if tag.category_id else "") + tag.name
+            })
+        return tags
     @api.depends("category_id")
     def _compute_category_sequence(self):
         for record in self:
@@ -173,6 +176,7 @@ class Document(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _name = "dmedocument.document"
     _description = _("DME Document")
+    _order = "id desc"
 
     name = fields.Char(string = _("Title"), required = True)
     document_type = fields.Selection([
@@ -190,6 +194,18 @@ class Document(models.Model):
     request_uid = fields.Many2one("res.users", string = _("Requester"))
 
     spreadsheet_content = fields.Text(string = _("Spreadsheet"))
+
+    size = fields.Char(string = _("Size"), compute = "_compute_size", store = True)
+
+    @api.depends("content", "spreadsheet_content")
+    def _compute_size(self):
+        for record in self:
+            file_size = 0
+            if record.content:
+                file_size = len(record.content)
+            elif record.spreadsheet_content:
+                file_size = len(record.spreadsheet_content)
+            record.size = FileUtils.base64length_to_string_size(file_size)
 
     @api.depends("message_ids")
     def _compute_content(self):
@@ -212,6 +228,16 @@ class Document(models.Model):
             record.name = name
             record.content = content
             record.document_type = document_type
+
+    owner = fields.Char(string = "Owner", compute = "_compute_owner", store = True)
+
+    @api.depends("create_uid")
+    def _compute_owner(self):
+        for record in self:
+            if record.create_uid:
+                record.owner = record.create_uid.name
+            else:
+                record.owner = False
 
     active = fields.Boolean(string = _("Active"), default = True)
 
@@ -248,8 +274,7 @@ class Document(models.Model):
         domain = '[("workspace_id", "=", workspace_id)]',
         ondelete = "cascade"
     )
-
-    @api.depends("document_type")
+    @api.depends("document_type", "name")
     def _compute_icon(self):
         for record in self:
             #Compute icon
@@ -271,6 +296,57 @@ class Document(models.Model):
                     record.icon = file_extension
             else:
                 record.icon = "none"
+
+    @api.model
+    def change_name(self, document_id, new_name):
+        document_id = int(document_id)
+        document = self.env["dmedocument.document"].browse(document_id)
+        _, extension = os.path.splitext(document.name)
+        if document:
+            document.name = new_name + (extension if extension else "")
+
+    @api.model
+    def remove_tag(self, document_id, tag_id):
+        tag_id = int(tag_id)
+        document_id = int(document_id)
+        document = self.env["dmedocument.document"].browse(document_id)
+        if document:
+            document.tag_ids = [(3, tag_id, 0)]
+        return {
+            "id": document.id,
+            "document_type": document.document_type,
+            "active": document.active,
+            "permission_write": document.permission_write,
+            "icon": document.icon,
+            "name": document.name,
+            "workspace_id": document.workspace_id.id,
+            "tag_ids": document.tag_ids.ids,
+            "owner": document.owner
+        }
+    @api.model
+    def append_tag(self, document_id, tag_id):
+        tag_id = int(tag_id)
+        document_id = int(document_id)
+        document = self.env["dmedocument.document"].browse(document_id)
+        if document:
+            document.tag_ids = [(4, tag_id, 0)]
+        return {
+            "id": document.id,
+            "document_type": document.document_type,
+            "active": document.active,
+            "permission_write": document.permission_write,
+            "icon": document.icon,
+            "name": document.name,
+            "workspace_id": document.workspace_id.id,
+            "tag_ids": document.tag_ids.ids,
+            "owner": document.owner
+        }
+    @api.model
+    def archive_by_id(self, document_id):
+        document_id = int(document_id)
+        document = self.env["dmedocument.document"].browse(document_id)
+        if document:
+            document.active = False
     def archive(self):
         self.active = False
 
