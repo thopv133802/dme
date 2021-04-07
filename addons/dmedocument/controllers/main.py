@@ -217,7 +217,11 @@ class Main(Controller):
         return request.make_response(json.dumps({
             "id": document.id,
             "document_type": document.document_type,
-            "icon": document.icon,
             "active": document.active,
             "permission_write": document.permission_write,
+            "icon": document.icon,
+            "name": document.name,
+            "workspace_id": document.workspace_id.id,
+            "tag_ids": document.tag_ids.ids,
+            "owner": document.owner
         }))

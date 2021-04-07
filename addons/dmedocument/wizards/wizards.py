@@ -112,7 +112,7 @@ class DocumentUpload(models.TransientModel):
     )
 
     def upload(self):
-        self.env["dmedocument.document"].create([
+        document_ids = self.env["dmedocument.document"].create([
             {
                 "name": document.name,
                 "content": document.datas,
@@ -124,7 +124,8 @@ class DocumentUpload(models.TransientModel):
         ])
         return {
             "type": "ir.actions.client",
-            "tag": "close_dialog_and_refresh"
+            "tag": "close_dialog_and_refresh",
+            "payload": document_ids.ids
         }
 
 class DocumentAddLink(models.TransientModel):

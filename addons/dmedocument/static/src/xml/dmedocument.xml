@@ -14,7 +14,7 @@
     <t t-extend = "KanbanView.buttons">
         <t t-jquery = "button" t-operation = "replace">
             <t t-if = "widget.modelName == 'dmedocument.document'">
-                <button type="button" class="btn btn-primary dme-document-upload" accesskey="u">
+                <button type="button" class="btn btn-primary dme-document-btn-upload" accesskey="u">
                     Upload
                 </button>
             </t>
@@ -24,18 +24,18 @@
                 </button>
             </t>
         </t>
-        <t t-jquery = ".dme-document-upload" t-operation = "after">
+        <t t-jquery = ".dme-document-btn-upload" t-operation = "after">
             <t t-if = "widget.modelName == 'dmedocument.document'">
-                <button class = "btn btn-secondary dme-document-create-spreadsheet" type = "button">
+                <button class = "btn btn-secondary dme-document-btn-create-spreadsheet" type = "button">
                     Create SpreadSheet
                 </button>
-                <button class = "btn btn-secondary dme-document-request" type = "button">
+                <button class = "btn btn-secondary dme-document-btn-request" type = "button">
                     Request
                 </button>
-                <button class = "btn btn-secondary dme-document-add-link" type = "button">
+                <button class = "btn btn-secondary dme-document-btn-add-link" type = "button">
                     Add Link
                 </button>
-                <button class = "btn btn-secondary dme-document-share" type = "button">
+                <button class = "btn btn-secondary dme-document-btn-share" type = "button">
                     Share
                 </button>
             </t>
@@ -43,10 +43,30 @@
 
     </t>
 
+    <t t-name = "dmedocument.KanbanView.Buttons">
+        <div class = "d-flex flex-row">
+            <button type="button" class="btn btn-primary dme-document-btn-upload mr4" accesskey="u">
+                Upload
+            </button>
+            <button class = "btn btn-secondary dme-document-btn-create-spreadsheet mr4" type = "button">
+                Create SpreadSheet
+            </button>
+            <button class = "btn btn-secondary dme-document-btn-request mr4" type = "button">
+                Request
+            </button>
+            <button class = "btn btn-secondary dme-document-btn-add-link mr4" type = "button">
+                Add Link
+            </button>
+            <button class = "btn btn-secondary dme-document-btn-share" type = "button">
+                Share
+            </button>
+        </div>
+    </t>
+
     <t t-extend = "ListView.buttons">
         <t t-jquery = ".o_list_button_add" t-operation = "replace">
             <t t-if = "widget.modelName == 'dmedocument.document'">
-                <button type="button" class="btn btn-primary dme-document-upload" accesskey="u">
+                <button type="button" class="btn btn-primary dme-document-btn-upload" accesskey="u">
                     Upload
                 </button>
             </t>
@@ -56,15 +76,15 @@
                 </button>
             </t>
         </t>
-        <t t-jquery = ".dme-document-upload" t-operation = "after">
+        <t t-jquery = ".dme-document-btn-upload" t-operation = "after">
             <t t-if = "widget.modelName == 'dmedocument.document'">
-                <button class = "btn btn-secondary dme-document-create-spreadsheet" type = "button">
+                <button class = "btn btn-secondary dme-document-btn-create-spreadsheet" type = "button">
                     Create SpreadSheet
                 </button>
-                <button class = "btn btn-secondary dme-document-request" type = "button">
+                <button class = "btn btn-secondary dme-document-btn-request" type = "button">
                     Request
                 </button>
-                <button class = "btn btn-secondary dme-document-add-link" type = "button">
+                <button class = "btn btn-secondary dme-document-btn-add-link" type = "button">
                     Add Link
                 </button>
             </t>
@@ -149,6 +169,128 @@
         </div>
     </t>
 
+    <t t-name = "dme-document-sidebar">
+        <div class = "dme-document-sidebar d-flex flex-column">
+            <div class = "dme-document-sidebar-header d-flex flex-column align-items-center" t-if = "documents.length > 0">
+                <div class = "dme-document-sidebar-header-images d-flex flex-grow-1 justify-content-center overflow-hidden mt8" style = "width: 100%"  t-if = "documents.length > 1">
+                    <t t-foreach = "documents" t-as = "document">
+                        <img t-attf-src = "/dmedocument/static/src/img/file_icons/#{document.icon}.svg" t-attf-style = "width: 64px; height: 64px;"/>
+                    </t>
+                </div>
+                <div class = "text-white"  t-if = "documents.length > 1">
+                    <t t-esc = "documents.length"/> tài liệu được chọn.
+                </div>
+                 <img t-if = "documents.length === 1" t-attf-src = "/dmedocument/static/src/img/file_icons/#{documents[0].icon}.svg" t-attf-style = "width: 104px; height: 104px;"/>
+            </div>
+            <div class = "dme-document-sidebar-content flex-grow-1 p-3" t-if = "documents.length > 0">
+                <div class = "dme-document-sidebar-content-actions">
+                    <div class="btn-group dme-document-sidebar-content-buttons" role="group" aria-label="Document operation">
+                        <t t-if = "documents.length === 1">
+                          <button type="button" t-attf-class="btn btn-secondary dme-document-sidebar-btn-download fa fa-download "/>
+                          <button type="button" t-attf-class="btn btn-secondary dme-document-sidebar-btn-share fa fa-share-alt " />
+                          <button type="button" t-attf-class="btn btn-secondary dme-document-sidebar-btn-replace fa fa-retweet "/>
+                        </t>
+                        <t t-elif = "documents.length > 1">
+                          <button type="button" t-attf-class="btn btn-secondary dme-document-sidebar-btn-download fa fa-download " />
+                          <button type="button" t-attf-class="btn btn-secondary dme-document-sidebar-btn-share fa fa-share-alt " />
+                        </t>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary dme-document-sidebar-btn-archive fa fa-archive float-right #{btn_archive_visible  ? '' : 'd-none'}" t-att-disabled = "btn_archive_disabled"/>
+                </div>
+                <div class = "dme-document-sidebar-content-fields mt-3">
+                    <table class = "table table-sm table-borderless">
+                        <tbody t-if = "documents.length === 1">
+                            <t t-set = "document" t-value = "documents[0]"/>
+                            <tr>
+                                <td class = "d-flex flex-nowrap align-items-center mt4">
+                                    <i class = "fa fa-file mr4"  style = "color: white"/>
+                                    <label for = "name" class = "text-white m-0">Name</label>
+                                </td>
+                                <td>
+                                    <input class = "dme-document-sidebar-input-name form-control" id = "name" autocomplete = "off" t-att-value = "document.name.substring(0, document.name.lastIndexOf('.'))"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class = "d-flex flex-nowrap align-items-center mt4">
+                                    <i class = "fa fa-user-circle mr4"  style = "color: white"/>
+                                    <label for = "owner" class = "text-white m-0">Owner</label>
+                                </td>
+                                <td>
+                                    <input class = "dme-document-sidebar-input-owner form-control" id = "owner" readonly = "readonly" t-att-value = "document.owner"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class = "d-flex flex-nowrap align-items-center mt4">
+                                    <i class = "fa fa-folder mr4" style = "color: white"/>
+                                    <label for = "workspace" class = "text-white m-0">Workspace</label>
+                                </td>
+                                <td>
+                                    <t t-set = "workspace_name" t-value = "document.workspace_id[1]"/>
+                                    <input class = "dme-document-sidebar-input-workspace form-control" id = "workspace"  t-att-value = "workspace_name" list = "datalist_workspaces"/>
+                                    <datalist id = "datalist_workspaces">
+                                        <t t-foreach = "workspaces" t-as = "workspace">
+                                            <option t-att-value = "workspace.name">
+                                            </option>
+                                        </t>
+                                    </datalist>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class = "d-flex flex-nowrap align-items-center mt4 ">
+                                    <i class = "fa fa-tag mr4"  style = "color: white"/>
+                                    <label for = "tags" class = "text-white m-0 text-truncate">Tags</label>
+                                </td>
+                                <td>
+                                    <div class = "dme-document-sidebar-container-tags">
+
+                                    </div>
+                                    <input class = "dme-document-sidebar-input-append-tag form-control" id = "tags" placeholder = "+ Append tag" list = "datalist_tags"/>
+                                    <datalist id = "datalist_tags" class = "dme-document-sidebar-datalist-tags">
+
+                                    </datalist>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody t-elif = "documents.length > 1">
+                            <tr>
+                                <td class = "d-flex flex-nowrap align-items-center mt4">
+                                    <i class = "fa fa-folder mr4" style = "color: white"/>
+                                    <label for = "workspace" class = "text-white m-0">Workspace</label>
+                                </td>
+                                <td>
+                                    <t t-set = "common_workspace_name" t-value = "common_workspace ? common_workspace[1] : false"/>
+                                    <input class = "dme-document-sidebar-input-workspace form-control" id = "workspace"  t-att-value = "common_workspace ? common_workspace_name : 'Multiple values' " list = "datalist_workspaces"/>
+                                    <datalist id = "datalist_workspaces">
+                                        <t t-foreach = "workspaces" t-as = "workspace">
+                                            <option t-att-value = "workspace.name">
+                                            </option>
+                                        </t>
+                                    </datalist>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class = "d-flex flex-nowrap align-items-center mt4 ">
+                                    <i class = "fa fa-tag mr4"  style = "color: white"/>
+                                    <label for = "tags" class = "text-white m-0 text-truncate">Tags</label>
+                                </td>
+                                <td>
+                                    <div class = "dme-document-sidebar-container-tags">
+
+                                    </div>
+                                    <input class = "dme-document-sidebar-input-append-tag form-control" id = "tags" placeholder = "+ Append tag" list = "datalist_tags"/>
+                                    <datalist id = "datalist_tags" class = "dme-document-sidebar-datalist-tags">
+
+                                    </datalist>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
     <t t-name = "dmedocument.dmedocument_document_sidebar">
         <div class = "dme-document-sidebar d-flex flex-column">
             <div class = "dme-document-sidebar-header d-flex align-items-center justify-content-center">
@@ -168,33 +310,37 @@
                     <table class = "table table-sm table-borderless">
                         <tbody>
                             <tr>
-                                <td>
-                                    <label for = "name" class = "text-white m-0 pt4">Name</label>
+                                <td class = "d-flex flex-nowrap align-items-center mt4">
+                                    <i class = "fa fa-file mr4"  style = "color: white"/>
+                                    <label for = "name" class = "text-white m-0">Name</label>
                                 </td>
                                 <td>
                                     <input class = "dme-document-name form-control" id = "name" autocomplete = "off"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <label for = "owner" class = "text-white m-0 pt4">Owner</label>
+                                <td class = "d-flex flex-nowrap align-items-center mt4">
+                                    <i class = "fa fa-user-circle mr4"  style = "color: white"/>
+                                    <label for = "owner" class = "text-white m-0">Owner</label>
                                 </td>
                                 <td>
                                     <input class = "dme-document-owner form-control" id = "owner" readonly = "readonly"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <label for = "workspace" class = "text-white m-0 pt4">Workspace</label>
+                                <td class = "d-flex flex-nowrap align-items-center mt4">
+                                    <i class = "fa fa-folder mr4" style = "color: white"/>
+                                    <label for = "workspace" class = "text-white m-0">Workspace</label>
                                 </td>
                                 <td>
-                                    <select class = "dme-document-workspace form-control" id = "workspace">
+                                    <select class = "dme-document-workspace form-control pl4"  id = "workspace">
                                     </select>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <label for = "tags" class = "text-white m-0 pt4">Tags</label>
+                                <td class = "d-flex flex-nowrap align-items-center mt4 ">
+                                    <i class = "fa fa-tag mr4"  style = "color: white"/>
+                                    <label for = "tags" class = "text-white m-0 text-truncate">Tags</label>
                                 </td>
                                 <td>
                                     <div class = "dme-document-tags">

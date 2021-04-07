@@ -2,7 +2,7 @@
   min-width: 8rem;
 }
 
-.dme-document-fill, .dme-document-link {
+.dme-document-kanban-record-btn-fill, .dme-document-link {
   cursor: pointer;
   padding: 4px;
 
@@ -28,7 +28,7 @@
   width: 100%
 }
 
-.dme-document-kanban-record {
+.dme-document-kanban-record-btn-select-one {
   cursor: pointer;
 
   &:focus, &:focus-within {
@@ -53,4 +53,14 @@
   }
 }
 
+.pl4 {
+  padding-left: 4px !important;;
+}
 
+.dme-document-kanban-record-btn-select {
+  font-size: 16px;
+  color: #57c2bc;
+  &:hover {
+    color: #343a40;
+  }
+}

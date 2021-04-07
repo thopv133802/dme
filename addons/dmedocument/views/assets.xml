@@ -12,7 +12,9 @@
             <link rel="stylesheet" href="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.css"/>
             <link href = "/dmedocument/static/src/scss/dmedocument.scss" rel = "stylesheet" type = "text/scss"/>
             <script src="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.js"/>
+            <script src="/dmedocument/static/src/js/dmedocument_utils.js" type="text/javascript"/>
             <script src="/dmedocument/static/src/js/dmedocument.js" type="text/javascript"/>
+            <script src="/dmedocument/static/src/js/dmedocument_kanban.js" type="text/javascript"/>
         </xpath>
     </template>
 </odoo>

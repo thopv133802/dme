@@ -137,7 +137,6 @@ class DocumentTag(models.Model):
     category_sequence = fields.Integer(compute = "_compute_category_sequence", store = True, invisible = True)
     workspace_id = fields.Many2one("dmedocument.workspace", string = _("Workspace"), readonly = True, compute = "_compute_workspace_id", store = True, ondelete = "cascade")
 
-
     def name_get(self):
         expand = "expand" in self._context and self._context["expand"]
         if not self or not expand:
@@ -151,6 +150,15 @@ class DocumentTag(models.Model):
     def search_read_by_workspace(self, workspace_id):
         tags = []
         for tag in self.env["dmedocument.tag"].search([("workspace_id", "=", workspace_id)]):
+            tags.append({
+                "id": tag.id,
+                "name": (tag.category_id.name + " > " if tag.category_id else "") + tag.name
+            })
+        return tags
+    @api.model
+    def search_read_by_ids(self, tag_ids):
+        tags = []
+        for tag in self.env["dmedocument.tag"].search([("id", "in", tag_ids)]):
             tags.append({
                 "id": tag.id,
                 "name": (tag.category_id.name + " > " if tag.category_id else "") + tag.name
@@ -206,7 +214,6 @@ class Document(models.Model):
             elif record.spreadsheet_content:
                 file_size = len(record.spreadsheet_content)
             record.size = FileUtils.base64length_to_string_size(file_size)
-
     @api.depends("message_ids")
     def _compute_content(self):
         for record in self:
@@ -304,49 +311,44 @@ class Document(models.Model):
         _, extension = os.path.splitext(document.name)
         if document:
             document.name = new_name + (extension if extension else "")
+    @api.model
+    def change_workspace(self, document_ids, new_workspace_id):
+        new_workspace_id = int(new_workspace_id)
+        self.env["dmedocument.document"].browse(document_ids).write({
+            "workspace_id": new_workspace_id
+        })
+    @api.model
+    def remove_tag(self, document_ids, tag_id):
+        tag_id = int(tag_id)
+        documents = self.env["dmedocument.document"].browse(document_ids)
+        if documents:
+            documents.write({
+                "tag_ids": [(3, tag_id, 0)]
+            })
 
     @api.model
-    def remove_tag(self, document_id, tag_id):
+    def append_tag(self, document_ids, tag_id):
         tag_id = int(tag_id)
-        document_id = int(document_id)
-        document = self.env["dmedocument.document"].browse(document_id)
-        if document:
-            document.tag_ids = [(3, tag_id, 0)]
-        return {
-            "id": document.id,
-            "document_type": document.document_type,
-            "active": document.active,
-            "permission_write": document.permission_write,
-            "icon": document.icon,
-            "name": document.name,
-            "workspace_id": document.workspace_id.id,
-            "tag_ids": document.tag_ids.ids,
-            "owner": document.owner
-        }
-    @api.model
-    def append_tag(self, document_id, tag_id):
-        tag_id = int(tag_id)
-        document_id = int(document_id)
-        document = self.env["dmedocument.document"].browse(document_id)
-        if document:
-            document.tag_ids = [(4, tag_id, 0)]
-        return {
-            "id": document.id,
-            "document_type": document.document_type,
-            "active": document.active,
-            "permission_write": document.permission_write,
-            "icon": document.icon,
-            "name": document.name,
-            "workspace_id": document.workspace_id.id,
-            "tag_ids": document.tag_ids.ids,
-            "owner": document.owner
-        }
+        documents = self.env["dmedocument.document"].browse(document_ids)
+        if documents:
+            documents.write({
+                "tag_ids": [(4, tag_id, 0)]
+            })
     @api.model
     def archive_by_id(self, document_id):
         document_id = int(document_id)
         document = self.env["dmedocument.document"].browse(document_id)
         if document:
             document.active = False
+
+    @api.model
+    def archive_by_ids(self, document_ids):
+        documents = self.env["dmedocument.document"].browse(document_ids)
+        if documents:
+            documents.write({
+                "active": False
+            })
+
     def archive(self):
         self.active = False
 

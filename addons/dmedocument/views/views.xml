@@ -121,7 +121,7 @@
                     group_edit="false"
                     group_delete="false"
                     archivable="false"
-                    js_class="DMEDocumentKanbanView"
+                    js_class="dmedocument_kanban_view"
             >
                 <field name="create_uid"/>
                 <field name="name"/>
@@ -141,14 +141,17 @@
                         <div class="oe_kanban_card o_kanban_record_has_image_fill">
                             <t t-set="is_document_viewable"
                                t-value="new RegExp('(gif|jpeg|jpg|png|pdf|spreadsheet|doc|xls)').test(record.icon.raw_value)"/>
-                            <a t-attf-class="#{record.document_type.raw_value === 'upload' ? 'dme-document-fill' : ''} #{record.document_type.raw_value === 'link' ? 'dme-document-link' : ''}  #{is_document_viewable ? 'o_Attachment_image o-attachment-viewable dme-document-viewer' : ''}">
+                            <a  t-attf-class='
+                                  #{record.document_type.raw_value === "upload" ? "dme-document-kanban-record-btn-fill" : ""}
+                                  #{record.document_type.raw_value === "link" ? "dme-document-link" : ""}
+                                  #{is_document_viewable ? "o_Attachment_image o-attachment-viewable dme-document-kanban-record-btn-view" : ""}'>
                                 <img alt="No Image"
                                      t-attf-src="/dmedocument/static/src/img/file_icons/#{record.icon.raw_value}.svg"
                                      t-attf-class="o_kanban_image o_kanban_image_fill_left}"/>
                             </a>
-                            <div class="oe_kanban_details">
-                                <div class="o_kanban_record_top dme-document-kanban-record">
-                                    <div class="o_kanban_record_headings ">
+                            <div class="oe_kanban_details dme-document-kanban-record-btn-select-one">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
                                         <div>
                                             <span class="fa fa-file">
                                             </span>
@@ -174,15 +177,17 @@
                                             </small>
                                         </t>
                                     </div>
+                                    <div class="float-right fa fa-circle-thin dme-document-kanban-record-btn-select" >
+                                    </div>
                                 </div>
-                                <div class="o_kanban_record_body  dme-document-kanban-record">
+                                <div class="o_kanban_record_body ">
                                     <div class="oe_kanban_list_many2many">
                                         <field name="tag_ids" widget="many2many_tags" options='{"color_field": "color"}'
                                                context='{"expand": True}'/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_record_bottom ">
-                                    <div class="oe_kanban_bottom_left  dme-document-kanban-record">
+                                    <div class="oe_kanban_bottom_left ">
                                         <field name="create_date" widget="date"/>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
@@ -415,5 +420,8 @@
             </search>
         </field>
     </record>
+
+
+
     <!---->
 </odoo>
