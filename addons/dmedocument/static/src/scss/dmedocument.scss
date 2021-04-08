@@ -59,8 +59,12 @@
 
 .dme-document-kanban-record-btn-select {
   font-size: 16px;
-  color: #57c2bc;
+  color: #7C7BAD;
   &:hover {
     color: #343a40;
-  }
+  };
+}
+.dme-document-kanban-record-selected {
+  border-color: #7C7BAD !important;
+  box-shadow: 0 0 0 1px #7C7BAD;
 }

@@ -25,22 +25,198 @@ odoo.define("dmedocument.Kanban", (require) => {
         },
         deselect: function () {
             this.selected = false
-            this._renderBtnSelect()
+            this._onSelectChanged()
         },
         select: function () {
             this.selected = true
-            this._renderBtnSelect()
-        },
-        _onFillButtonClicked: function (event) {
-            event.stopPropagation()
+            this._onSelectChanged()
         },
         _onViewButtonClicked: function (event) {
             event.stopPropagation()
+            const self = this
+            if (self.modelName !== "dmedocument.document") return
+
+            if(self.record.document_type.raw_value === "spreadsheet") {
+                const $dialogManager = $(".o_DialogManager")
+                if ($dialogManager) {
+                    const $dialogContent = $(QWeb.render("dmedocument.dmedocument_template_document_spreadsheet_viewer", {
+                        "document_id": self.record.id.raw_value,
+                        "document_name": self.record.name.raw_value
+                    }))
+                    $dialogContent.find(".o_AttachmentViewer_headerItemButtonClose").click(function (ev) {
+                        ev.stopPropagation()
+                        $dialogManager.empty()
+                    })
+                    const spreadsheet = x_spreadsheet($dialogContent.find(".dme-document-spreadsheet-viewer").first()[0], {
+                        mode: "read",
+                        showToolbar: false,
+                        showContextmenu: true,
+                        view: {
+                            height: () => document.documentElement.clientHeight - 92,
+                            width: () => document.documentElement.clientWidth * 0.9
+                        },
+                    })
+
+                    self._rpc({
+                        "route": "/dmedocument/document/spreadsheet_content",
+                        "params": {
+                            "document_id": self.record.id.raw_value
+                        }
+                    }).then(function(response) {
+                        const [status, spreadsheet_content] = response
+                        if (status){
+                            spreadsheet.loadData(spreadsheet_content ? JSON.parse(spreadsheet_content) : [{}])
+                            const $spreadsheet = $dialogContent.find(".x-spreadsheet").first()
+
+                            $spreadsheet.find(".x-spreadsheet-menu > li").first().remove()
+                            const $bottombar = $spreadsheet.find(".x-spreadsheet-bottombar")
+                            $bottombar.css({"padding-left": 0, "border-bottom": "1px solid #e0e2e4"})
+                            $bottombar.find(".x-spreadsheet-dropdown").remove()
+                            $bottombar.prependTo($spreadsheet)
+
+                            $dialogManager.empty().append($dialogContent)
+
+                            $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
+                                ev.stopPropagation()
+                                const workbook = xtos(spreadsheet.getData())
+                                XLSX.writeFile(workbook, self.record.name.raw_value + ".xlsx")
+                            })
+                        }
+                        else {
+                            self.displayNotification({
+                                title: _t(spreadsheet_content)
+                            })
+                        }
+                    })
+                }
+            }
+            else {
+                const fileURL = "/web/content/dmedocument.document/" + self.record.id.raw_value + "/content"
+                let iFrameURL = fileURL
+                if (self.record.icon.raw_value === "pdf")
+                    iFrameURL = "/web/static/lib/pdfjs/web/viewer.html?file=" + iFrameURL
+                else if (["doc", "docx"].includes(self.record.icon.raw_value))
+                    iFrameURL = "/web/static/lib/pdfjs/web/viewer.html?file=/dmedocument/document/docx2pdf/"  + self.record.id.raw_value
+                else if (["xls", "xlsx"].includes(self.record.icon.raw_value))
+                    iFrameURL = "/web/static/lib/pdfjs/web/viewer.html?file=/dmedocument/document/xlsx2pdf/" + self.record.id.raw_value
+
+                if(["doc", "docx", "xls", "xlsx"].includes(self.record.icon.raw_value)) {
+                    self._rpc({
+                        "route": "/dmedocument/document/document_viewable/" + self.record.id.raw_value,
+                        "params": {}
+                    }).then(function(response) {
+                        const [viewable, message] = response
+                        if(viewable) {
+                            const $dialogManager = $(".o_DialogManager")
+                            if ($dialogManager) {
+                                const $dialogContent = $(QWeb.render("dmedocument.dmedocument_template_document_viewer", {
+                                    "document_id": self.record.id.raw_value,
+                                    "document_name": self.record.name.raw_value,
+                                    "iframe_url": iFrameURL
+                                }))
+                                $dialogContent.find(".o_AttachmentViewer_headerItemButtonClose").click(function (ev) {
+                                    ev.stopPropagation()
+                                    $dialogManager.empty()
+                                })
+                                $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
+                                    ev.stopPropagation()
+                                    window.open(fileURL + "?download=True")
+                                })
+                                $dialogManager.empty().append($dialogContent)
+                            }
+                        }
+                        else {
+                            self.displayNotification({
+                                title: _t("This document cannot be previewed" + (message ?  ": " + message : ""))
+                            })
+                        }
+                    })
+                }
+                else {
+                    const $dialogManager = $(".o_DialogManager")
+                    if ($dialogManager) {
+                        const $dialogContent = $(QWeb.render("dmedocument.dmedocument_template_document_viewer", {
+                            "document_id": self.record.id.raw_value,
+                            "document_name": self.record.name.raw_value,
+                            "iframe_url": iFrameURL
+                        }))
+                        $dialogContent.find(".o_AttachmentViewer_headerItemButtonClose").click(function (ev) {
+                            ev.stopPropagation()
+                            $dialogManager.empty()
+                        })
+                        $dialogContent.find(".o_AttachmentViewer_buttonDownload").click(function (ev) {
+                            ev.stopPropagation()
+                            window.open(fileURL + "?download=True")
+                        })
+                        $dialogManager.empty().append($dialogContent)
+                    }
+                }
+            }
+        },
+        _onFillButtonClicked: function (event) {
+            event.stopPropagation()
+            if(this.record.document_type.raw_value !== "upload") return
+            const self = this
+            self._rpc({
+                "route": "/dmedocument/document/permission/upload",
+                "params": {
+                    document_id: self.record.id.raw_value
+                }
+            }).then(function(response) {
+                const [isOK, message] = response
+                if(isOK) {
+                    const $formContainer = $(QWeb.render("dmedocument.dmedocument_template_document_upload", {
+                        fileupload_id: self.fileupload_id,
+                        csrf_token: WebCore.csrf_token,
+                        accepted_file_extensions: "*",
+                        fileupload_action: "/dmedocument/document/fill",
+                        document_id: self.record.id.raw_value
+                    }))
+
+                    const $form = $formContainer.find(".dme-form-document-upload")
+                    $form.on("submit", function(submitEvent) {
+                        submitEvent.preventDefault()
+                        const form = submitEvent.currentTarget;
+                        fetch(form.action, {
+                            method: form.method,
+                            body: new FormData(form)
+                        }).then(function(response) {
+                            self.trigger_up('reload', { keepChanges: true });
+                            $formContainer.remove()
+                            Framework.unblockUI()
+                            response.json()
+                                .then((message) => {
+                                    self.displayNotification({
+                                        title: message
+                                    })
+                                })
+                        }, function(error) {
+                            self.displayNotification({
+                                title: error
+                            })
+                        })
+                        Framework.blockUI()
+                    })
+
+                    const $input = $formContainer.find(".dme-input-document-upload")
+                    $input.on("change", function(changeEvent) {
+                        $form.submit()
+                    })
+
+                    self.$el.append($formContainer)
+                    $input.click()
+                }
+                else {
+                    self.displayNotification({
+                        title: _t(message)
+                    })
+                }
+            })
         },
         _onSelectButtonClicked: function (event) {
             event.stopPropagation()
             this.selected = !this.selected
-            this._renderBtnSelect()
+            this._onSelectChanged()
             this.trigger_up("dme-document-kanban-record-custom-event-select", {
                 document_id: this.record.id.raw_value
             })
@@ -50,21 +226,21 @@ odoo.define("dmedocument.Kanban", (require) => {
             if(hasMailActivity) return
             event.stopPropagation()
             this.selected = true
-            this._renderBtnSelect()
+            this._onSelectChanged()
             this.trigger_up("dme-document-kanban-record-custom-event-select-one", {
                 document_id: this.record.id.raw_value
             })
         },
-        _renderBtnSelect: function () {
+        _onSelectChanged: function () {
             const $btn_select = this.$el.find(".dme-document-kanban-record-btn-select")
             if (this.selected) {
                 $btn_select.addClass("fa-check-circle")
                     .removeClass("fa-circle-thin")
-                this.$el.addClass("dme-document-kanban-record-style-selected")
+                this.$el.addClass("dme-document-kanban-record-selected")
             } else {
                 $btn_select.addClass("fa-circle-thin")
                     .removeClass("fa-check-circle")
-                this.$el.removeClass("dme-document-kanban-record-style-selected")
+                this.$el.removeClass("dme-document-kanban-record-selected")
             }
         }
     })
@@ -155,7 +331,7 @@ odoo.define("dmedocument.Kanban", (require) => {
             self._rpc({
                 "route": "/web/action/load",
                 "params": {
-                    "action_id": "dmedocument.dmedocument_action_document_add_link_wizard"
+                    "action_id": "dmedocument.dmedocument_action_document_request_wizard"
                 }
             }).then(function(action) {
                 if(action) {
